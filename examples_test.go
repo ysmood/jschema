@@ -13,13 +13,13 @@ func ExampleNew() {
 		Children []*Node `json:"children"`
 	}
 
-	// Create a schema instance
+	// Create a schema list instance
 	schemas := jschema.New("#/components/schemas")
 
 	// Define a type within the schema
 	schemas.Define(Node{})
 
-	// Marshal the schema to json string
+	// Marshal the schema list to json string
 	out, err := json.MarshalIndent(schemas.JSON(), "", "  ")
 	if err != nil {
 		panic(err)
@@ -59,7 +59,7 @@ func ExampleNew() {
 }
 
 func ExampleSchemas() {
-	// Create a schema instance
+	// Create a schema list instance
 	schemas := jschema.New("#/components/schemas")
 
 	type A string
@@ -90,7 +90,7 @@ func ExampleSchemas() {
 		node.Properties["options"].Enum = jschema.ToJValList(1, 2, 3)
 	}
 
-	// Marshal the schema to json string
+	// Marshal the schema list to json string
 	out, err := json.MarshalIndent(schemas.JSON(), "", "  ")
 	if err != nil {
 		panic(err)
