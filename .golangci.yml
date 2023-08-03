@@ -1,0 +1,40 @@
+run:
+  skip-dirs-use-default: false
+
+linters:
+  enable-all: true
+  disable:
+    - gocognit
+    - funlen
+    - nlreturn
+    - exhaustruct
+    - wsl
+    - contextcheck
+    - gomnd
+    - gochecknoinits
+    - paralleltest
+    - wrapcheck
+    - gosec
+    - gochecknoglobals
+    - musttag
+    - revive
+    - varnamelen
+    - depguard
+
+    # Deprecated ones:
+    - structcheck
+    - interfacer
+    - deadcode
+    - varcheck
+    - ifshort
+    - exhaustivestruct
+    - golint
+    - maligned
+    - nosnakecase
+    - scopelint
+
+gocyclo:
+  min-complexity: 15
+
+issues:
+  exclude-use-default: false
