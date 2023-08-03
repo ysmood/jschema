@@ -1,4 +1,4 @@
-module github.com/ysmood/jschema
+module github.com/NaturalSelectionLabs/jschema
 
 go 1.20
 

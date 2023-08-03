@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ysmood/jschema"
+	"github.com/NaturalSelectionLabs/jschema"
 )
 
 func ExampleNew() {
@@ -32,7 +32,7 @@ func ExampleNew() {
 	//   "Node": {
 	//     "type": "object",
 	//     "title": "Node",
-	//     "description": "github.com/ysmood/jschema_test.Node",
+	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Node",
 	//     "properties": {
 	//       "children": {
 	//         "type": "array",
@@ -103,17 +103,17 @@ func ExampleSchemas() {
 	//   "A": {
 	//     "type": "string",
 	//     "title": "A",
-	//     "description": "github.com/ysmood/jschema_test.A"
+	//     "description": "github.com/NaturalSelectionLabs/jschema_test.A"
 	//   },
 	//   "B": {
 	//     "type": "number",
 	//     "title": "B",
-	//     "description": "github.com/ysmood/jschema_test.B"
+	//     "description": "github.com/NaturalSelectionLabs/jschema_test.B"
 	//   },
 	//   "Node": {
 	//     "type": "object",
 	//     "title": "Node",
-	//     "description": "github.com/ysmood/jschema_test.Node",
+	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Node",
 	//     "properties": {
 	//       "metadata": {
 	//         "anyOf": [

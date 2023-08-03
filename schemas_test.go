@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/NaturalSelectionLabs/jschema"
 	"github.com/ysmood/got"
-	"github.com/ysmood/jschema"
 )
 
 func TestTypeName(t *testing.T) {
@@ -64,7 +64,7 @@ func TestCommonSchema(t *testing.T) {
 	g.Eq(g.JSON(g.ToJSONString(c.JSON())), map[string]interface{} /* len=2 */ {
 		"Node1": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.Node1`, /* len=61 */
+			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Node1`, /* len=61 */
 			"properties": map[string]interface{} /* len=6 */ {
 				"Arr": map[string]interface{} /* len=4 */ {
 					"items": map[string]interface{}{
@@ -110,7 +110,7 @@ func TestCommonSchema(t *testing.T) {
 		},
 		"Node2": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.Node2`, /* len=61 */
+			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Node2`, /* len=61 */
 			"properties": map[string]interface{} /* len=2 */ {
 				"Any": map[string]interface{}{
 					"type": "object",
@@ -160,7 +160,7 @@ func TestHandler(t *testing.T) {
 		},
 		"B": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.B`, /* len=57 */
+			"description":                        `github.com/NaturalSelectionLabs/jschema_test.B`, /* len=57 */
 			"properties": map[string]interface{}{
 				"A": map[string]interface{}{
 					"type": "number",
@@ -228,7 +228,7 @@ func TestNameConflict(t *testing.T) {
 		},
 		"Time1": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.Time`, /* len=60 */
+			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Time`, /* len=60 */
 			"properties": map[string]interface{}{
 				"Name": map[string]interface{}{
 					"type": "string",
@@ -258,7 +258,7 @@ func TestRawMessage(t *testing.T) {
 	g.Eq(g.JSON(g.ToJSONString(c.JSON())), map[string]interface{} /* len=2 */ {
 		"A": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.A`, /* len=57 */
+			"description":                        `github.com/NaturalSelectionLabs/jschema_test.A`, /* len=57 */
 			"properties": map[string]interface{}{
 				"A": map[string]interface{} /* len=2 */ {
 					"description": `encoding/json.RawMessage`, /* len=24 */
