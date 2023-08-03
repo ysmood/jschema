@@ -42,6 +42,3 @@ func ParseJSONTag(st reflect.StructTag) *Tag {
 		String:    t.Contains("string"),
 	}
 }
-
-func (s *Schema) ChangeRoot(p string) {
-}

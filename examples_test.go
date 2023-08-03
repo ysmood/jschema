@@ -73,7 +73,7 @@ func ExampleSchemas() {
 	}
 
 	schemas.Define(Node{})
-	node := schemas.GetSchema(Node{})
+	node := schemas.PeakSchema(Node{})
 
 	// Make the metadata field accept either A or B
 	{

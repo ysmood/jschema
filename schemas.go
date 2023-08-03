@@ -84,7 +84,7 @@ func (s Schemas) add(r Ref, scm *Schema) {
 	}
 }
 
-// DefineT ...
+// DefineT converts the t to Schema recursively and append newly meet schemas to the schema list s.
 func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 	r := s.RefT(t)
 	if s.has(r) {
