@@ -9,9 +9,10 @@ import (
 
 func ExampleNew() {
 	type Node struct {
-		// The default tag only accepts json string,
+		// The default tag only accepts json string.
+		// So if you want to set a string value "jack",
 		// you should use "\"jack\"" instead of "jack" for the field tag
-		ID int `json:"id" default:"\"jack\""`
+		ID int `json:"id" default:"1"`
 
 		Children []*Node `json:"children"`
 	}
@@ -50,7 +51,7 @@ func ExampleNew() {
 	//       },
 	//       "id": {
 	//         "type": "number",
-	//         "default": "jack"
+	//         "default": 1
 	//       }
 	//     },
 	//     "required": [

@@ -33,6 +33,7 @@ func New(refPrefix string) Schemas {
 }
 
 // Schema is designed for typescript conversion.
+// Its fields is a strict subset of json schema fields.
 type Schema struct {
 	// string, number, boolean, null, array, object
 	Type SchemaType `json:"type,omitempty"`
@@ -73,6 +74,7 @@ const (
 
 type Properties map[string]*Schema
 
+// JVal can be any valid json value, e.g. string, number, bool, null, []interface{}, map[string]interface{}.
 type JVal interface{}
 
 func (s Schemas) has(r Ref) bool {
