@@ -2,6 +2,7 @@
 package jschema
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 )
@@ -55,6 +56,7 @@ type Schema struct {
 	Items    *Schema `json:"items,omitempty"`
 	MinItems *int    `json:"minItems,omitempty"`
 	MaxItems *int    `json:"maxItems,omitempty"`
+	Default  JVal    `json:"default,omitempty"`
 }
 
 type SchemaType string
@@ -168,6 +170,16 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 			desc := f.Tag.Get("description")
 			if desc != "" {
 				p.Description = desc
+			}
+
+			defaultVal := f.Tag.Get("default")
+			if defaultVal != "" {
+				var d JVal
+				err := json.Unmarshal([]byte(defaultVal), &d)
+				if err != nil {
+					panic(fmt.Errorf("default value is invalid json string for %s: %w", n, err))
+				}
+				p.Default = d
 			}
 
 			if tag != nil {

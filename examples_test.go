@@ -9,7 +9,10 @@ import (
 
 func ExampleNew() {
 	type Node struct {
-		ID       int     `json:"id"`
+		// The default tag only accepts json string,
+		// you should use "\"jack\"" instead of "jack" for the field tag
+		ID int `json:"id" default:"\"jack\""`
+
 		Children []*Node `json:"children"`
 	}
 
@@ -46,7 +49,8 @@ func ExampleNew() {
 	//         }
 	//       },
 	//       "id": {
-	//         "type": "number"
+	//         "type": "number",
+	//         "default": "jack"
 	//       }
 	//     },
 	//     "required": [
@@ -74,6 +78,11 @@ func ExampleSchemas() {
 
 	schemas.Define(Node{})
 	node := schemas.PeakSchema(Node{})
+
+	// Define default value
+	{
+		node.Properties["name"].Default = "jack"
+	}
 
 	// Make the metadata field accept either A or B
 	{
@@ -126,7 +135,8 @@ func ExampleSchemas() {
 	//         ]
 	//       },
 	//       "name": {
-	//         "type": "number"
+	//         "type": "number",
+	//         "default": "jack"
 	//       },
 	//       "options": {
 	//         "type": "array",

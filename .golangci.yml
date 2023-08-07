@@ -4,6 +4,7 @@ run:
 linters:
   enable-all: true
   disable:
+    - tagalign
     - gocognit
     - funlen
     - nlreturn
