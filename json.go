@@ -4,6 +4,8 @@ import (
 	"reflect"
 )
 
+// JSON returns a JSON representation of the schemas.
+// Usually you [json.Marshal] it to generate a json file.
 func (s Schemas) JSON() map[string]*Schema {
 	m := map[string]*Schema{}
 
