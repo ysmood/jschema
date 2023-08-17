@@ -6,6 +6,12 @@ import (
 	"reflect"
 )
 
+// Description set the description for current type.
+func (s Schemas) Description(v interface{}, desc string) {
+	scm := s.PeakSchema(v)
+	scm.Description = desc
+}
+
 // Define is a shortcut for [Schemas.DefineT].
 func (s Schemas) Define(v interface{}) *Schema {
 	return s.DefineT(reflect.TypeOf(v))

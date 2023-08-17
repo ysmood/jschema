@@ -14,7 +14,8 @@ func ExampleNew() {
 		// you should use "\"jack\"" instead of "jack" for the field tag
 		ID int `json:"id" default:"1"`
 
-		Children []*Node `json:"children"`
+		// Use the description tag to set the description of the field
+		Children []*Node `json:"children" description:"The children of the node"`
 	}
 
 	// Create a schema list instance
@@ -22,6 +23,7 @@ func ExampleNew() {
 
 	// Define a type within the schema
 	schemas.Define(Node{})
+	schemas.Description(Node{}, "A node in the tree")
 
 	// Marshal the schema list to json string
 	out, err := json.MarshalIndent(schemas.JSON(), "", "  ")
@@ -36,10 +38,11 @@ func ExampleNew() {
 	//   "Node": {
 	//     "type": "object",
 	//     "title": "Node",
-	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Node",
+	//     "description": "A node in the tree",
 	//     "properties": {
 	//       "children": {
 	//         "type": "array",
+	//         "description": "The children of the node",
 	//         "items": {
 	//           "nullable": true,
 	//           "anyOf": [
