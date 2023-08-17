@@ -75,7 +75,7 @@ func TestCommonSchema(t *testing.T) {
 					"type":     "array",
 				},
 				"Obj": map[string]interface{} /* len=2 */ {
-					"anyOf": []interface{} /* len=1 cap=1 */ {
+					"oneOf": []interface{} /* len=1 cap=1 */ {
 						map[string]interface{}{
 							"$ref": "#/$defs/Node2",
 						},
@@ -276,4 +276,18 @@ func TestRawMessage(t *testing.T) {
 			"title":       "RawMessage",
 		},
 	})
+}
+
+func TestRef(t *testing.T) {
+	g := got.T(t)
+
+	c := jschema.New("")
+
+	type A struct{}
+
+	type B struct{ A A }
+
+	c.Define(B{})
+
+	g.Eq(c.PeakSchema(A{}).Title, "A")
 }

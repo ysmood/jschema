@@ -46,7 +46,7 @@ type Schema struct {
 
 	Nullable *bool `json:"nullable,omitempty"`
 
-	AnyOf []*Schema `json:"anyOf,omitempty"`
+	OneOf []*Schema `json:"oneOf,omitempty"`
 	Enum  []JVal    `json:"enum,omitempty"`
 
 	Properties           Properties `json:"properties,omitempty"`
@@ -203,7 +203,7 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 		*scm = *s.DefineT(t.Elem())
 
 		if scm.Ref != nil {
-			scm.AnyOf = []*Schema{{Ref: scm.Ref}}
+			scm.OneOf = []*Schema{{Ref: scm.Ref}}
 			scm.Ref = nil
 		}
 

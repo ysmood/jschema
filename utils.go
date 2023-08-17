@@ -18,8 +18,18 @@ func (s Schemas) Define(v interface{}) *Schema {
 }
 
 // PeakSchema returns the schema for the given target it won't modify the schema list.
+// If the target is a schema it will auto expand the ref and return the schema itself.
 func (s *Schemas) PeakSchema(v interface{}) *Schema {
 	r := s.Ref(v)
+
+	if scm, ok := v.(*Schema); ok {
+		if scm.Ref == nil {
+			return scm
+		} else {
+			r = *scm.Ref
+		}
+	}
+
 	return s.types[r.ID]
 }
 
@@ -50,7 +60,7 @@ func (s *Schema) Clone() *Schema {
 	return n
 }
 
-func (s *Schemas) AnyOf(list ...interface{}) *Schema {
+func (s *Schemas) OneOf(list ...interface{}) *Schema {
 	ss := []*Schema{}
 
 	for _, v := range list {
@@ -58,7 +68,7 @@ func (s *Schemas) AnyOf(list ...interface{}) *Schema {
 	}
 
 	return &Schema{
-		AnyOf: ss,
+		OneOf: ss,
 	}
 }
 

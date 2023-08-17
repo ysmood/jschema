@@ -45,7 +45,7 @@ func ExampleNew() {
 	//         "description": "The children of the node",
 	//         "items": {
 	//           "nullable": true,
-	//           "anyOf": [
+	//           "oneOf": [
 	//             {
 	//               "$ref": "#/components/schemas/Node"
 	//             }
@@ -70,14 +70,24 @@ func ExampleSchemas() {
 	// Create a schema list instance
 	schemas := jschema.New("#/components/schemas")
 
+	type Metadata interface{}
+
+	// Make the metadata field accept either A or B
+	IMetadata := jschema.DefineI(schemas, new(Metadata))
+
 	type A string
+
+	IMetadata.Define(A(""))
+
 	type B int
 
+	IMetadata.Define(B(0))
+
 	type Node struct {
-		Name     int         `json:"name"`
-		Metadata interface{} `json:"metadata,omitempty"` // omitempty make this field optional
-		Version  string      `json:"version"`
-		Options  []string    `json:"options"`
+		Name     int      `json:"name"`
+		Metadata Metadata `json:"metadata,omitempty"` // omitempty make this field optional
+		Version  string   `json:"version"`
+		Options  []string `json:"options"`
 	}
 
 	schemas.Define(Node{})
@@ -86,11 +96,6 @@ func ExampleSchemas() {
 	// Define default value
 	{
 		node.Properties["name"].Default = "jack"
-	}
-
-	// Make the metadata field accept either A or B
-	{
-		node.Properties["metadata"] = schemas.AnyOf(A(""), B(0))
 	}
 
 	// Define constants
@@ -123,20 +128,25 @@ func ExampleSchemas() {
 	//     "title": "B",
 	//     "description": "github.com/NaturalSelectionLabs/jschema_test.B"
 	//   },
+	//   "Metadata": {
+	//     "title": "Metadata",
+	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Metadata",
+	//     "oneOf": [
+	//       {
+	//         "$ref": "#/components/schemas/A"
+	//       },
+	//       {
+	//         "$ref": "#/components/schemas/B"
+	//       }
+	//     ]
+	//   },
 	//   "Node": {
 	//     "type": "object",
 	//     "title": "Node",
 	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Node",
 	//     "properties": {
 	//       "metadata": {
-	//         "anyOf": [
-	//           {
-	//             "$ref": "#/components/schemas/A"
-	//           },
-	//           {
-	//             "$ref": "#/components/schemas/B"
-	//           }
-	//         ]
+	//         "$ref": "#/components/schemas/Metadata"
 	//       },
 	//       "name": {
 	//         "type": "number",

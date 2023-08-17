@@ -1,6 +1,7 @@
 package jschema
 
 import (
+	"encoding/json"
 	"reflect"
 )
 
@@ -14,6 +15,14 @@ func (s Schemas) JSON() map[string]*Schema {
 	}
 
 	return m
+}
+
+func (s Schemas) String() string {
+	b, err := json.MarshalIndent(s.JSON(), "", "  ")
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
 }
 
 type Tag struct {
