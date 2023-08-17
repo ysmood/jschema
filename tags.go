@@ -14,9 +14,8 @@ func parseTag(tag string) (string, tagOptions) {
 }
 
 // Contains reports whether a comma-separated list of options
-// contains a particular substr flag. substr must be surrounded by a
-// string boundary or commas.
-func (o tagOptions) Contains(optionName string) bool {
+// contains a particular option.
+func (o tagOptions) Contains(option string) bool {
 	if len(o) == 0 {
 		return false
 	}
@@ -24,7 +23,7 @@ func (o tagOptions) Contains(optionName string) bool {
 	for s != "" {
 		var name string
 		name, s, _ = strings.Cut(s, ",")
-		if name == optionName {
+		if name == option {
 			return true
 		}
 	}
