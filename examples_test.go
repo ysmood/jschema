@@ -1,8 +1,8 @@
 package jschema_test
 
 import (
-	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/NaturalSelectionLabs/jschema"
 )
@@ -25,13 +25,7 @@ func ExampleNew() {
 	schemas.Define(Node{})
 	schemas.Description(Node{}, "A node in the tree")
 
-	// Marshal the schema list to json string
-	out, err := json.MarshalIndent(schemas.JSON(), "", "  ")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(string(out))
+	fmt.Println(schemas.String())
 
 	// Output:
 	// {
@@ -108,13 +102,7 @@ func ExampleSchemas() {
 		node.Properties["options"].Enum = jschema.ToJValList(1, 2, 3)
 	}
 
-	// Marshal the schema list to json string
-	out, err := json.MarshalIndent(schemas.JSON(), "", "  ")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(string(out))
+	fmt.Println(schemas.String())
 
 	// Output:
 	// {
@@ -176,6 +164,51 @@ func ExampleSchemas() {
 	//       "options"
 	//     ],
 	//     "additionalProperties": false
+	//   }
+	// }
+}
+
+func Example_custom_handler() {
+	s := jschema.New("")
+
+	s.AddHandler(time.Time{}, func() *jschema.Schema {
+		return &jschema.Schema{
+			Description: "time.Time",
+			Title:       "Time",
+			Type:        jschema.TypeNumber,
+		}
+	})
+
+	type Data struct {
+		Time time.Time `json:"time"`
+	}
+
+	s.Define(Data{})
+
+	fmt.Println(s.String())
+
+	// Output:
+	// {
+	//   "Data": {
+	//     "type": "object",
+	//     "title": "Data",
+	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Data",
+	//     "properties": {
+	//       "time": {
+	//         "type": "number",
+	//         "title": "Time",
+	//         "description": "time.Time"
+	//       }
+	//     },
+	//     "required": [
+	//       "time"
+	//     ],
+	//     "additionalProperties": false
+	//   },
+	//   "Time": {
+	//     "type": "number",
+	//     "title": "Time",
+	//     "description": "time.Time"
 	//   }
 	// }
 }
