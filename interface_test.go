@@ -94,7 +94,7 @@ func TestInterface(t *testing.T) {
 		},
 		"Shape": map[string]interface{} /* len=3 */ {
 			"description": `github.com/NaturalSelectionLabs/jschema_test.Shape`, /* len=50 */
-			"oneOf": []interface{} /* len=2 cap=2 */ {
+			"anyOf": []interface{} /* len=2 cap=2 */ {
 				map[string]interface{}{
 					"$ref": `#/$defs/Rectangle`, /* len=17 */
 				},

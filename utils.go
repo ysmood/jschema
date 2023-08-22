@@ -60,7 +60,7 @@ func (s *Schema) Clone() *Schema {
 	return n
 }
 
-func (s *Schemas) OneOf(list ...interface{}) *Schema {
+func (s *Schemas) AnyOf(list ...interface{}) *Schema {
 	ss := []*Schema{}
 
 	for _, v := range list {
@@ -68,7 +68,7 @@ func (s *Schemas) OneOf(list ...interface{}) *Schema {
 	}
 
 	return &Schema{
-		OneOf: ss,
+		AnyOf: ss,
 	}
 }
 

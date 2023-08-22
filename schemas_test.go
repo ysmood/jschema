@@ -75,7 +75,7 @@ func TestCommonSchema(t *testing.T) {
 					"type":     "array",
 				},
 				"Obj": map[string]interface{} /* len=2 */ {
-					"oneOf": []interface{} /* len=1 cap=1 */ {
+					"anyOf": []interface{} /* len=1 cap=1 */ {
 						map[string]interface{}{
 							"$ref": "#/$defs/Node2",
 						},

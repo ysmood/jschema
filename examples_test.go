@@ -39,7 +39,7 @@ func ExampleNew() {
 	//         "description": "The children of the node",
 	//         "items": {
 	//           "nullable": true,
-	//           "oneOf": [
+	//           "anyOf": [
 	//             {
 	//               "$ref": "#/components/schemas/Node"
 	//             }
@@ -119,7 +119,7 @@ func ExampleSchemas() {
 	//   "Metadata": {
 	//     "title": "Metadata",
 	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Metadata",
-	//     "oneOf": [
+	//     "anyOf": [
 	//       {
 	//         "$ref": "#/components/schemas/A"
 	//       },

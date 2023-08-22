@@ -20,6 +20,6 @@ func (i Interface[T]) Define(target T) *Schema {
 	scm := i.s.types[i.ref.ID]
 	scm.Type = ""
 	s := i.s.Define(target)
-	scm.OneOf = append(scm.OneOf, s)
+	scm.AnyOf = append(scm.AnyOf, s)
 	return s
 }
