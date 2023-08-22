@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/NaturalSelectionLabs/jschema"
+	"github.com/xeipuuv/gojsonschema"
 	"github.com/ysmood/got"
 )
 
@@ -105,4 +106,29 @@ func TestInterface(t *testing.T) {
 			"title": "Shape",
 		},
 	})
+
+	schema := gojsonschema.NewGoLoader(map[string]interface{}{
+		"$ref":  "#/$defs/Shape",
+		"$defs": s.JSON(),
+	})
+
+	{
+		result, err := gojsonschema.Validate(
+			schema,
+			gojsonschema.NewGoLoader(map[string]interface{}{"Width": 1, "Height": 2}),
+		)
+		g.E(err)
+
+		g.Desc("%v", result.Errors()).True(result.Valid())
+	}
+
+	{
+		result, err := gojsonschema.Validate(
+			schema,
+			gojsonschema.NewGoLoader(map[string]interface{}{"Width": 1, "Height": 2, "Radius": 3}),
+		)
+		g.E(err)
+
+		g.Eq(result.Errors()[1].String(), "(root): Additional property Radius is not allowed")
+	}
 }
