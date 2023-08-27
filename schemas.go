@@ -206,11 +206,13 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 	case reflect.Ptr:
 		*scm = *s.DefineT(t.Elem())
 
-		if scm.Ref != nil {
+		if scm.Ref == nil {
+			n := *scm
+			scm.Type = ""
+			scm.AnyOf = []*Schema{&n, {Type: TypeNull}}
+		} else {
 			scm.AnyOf = []*Schema{{Ref: scm.Ref}, {Type: TypeNull}}
 			scm.Ref = nil
-		} else {
-			scm.AnyOf = []*Schema{scm, {Type: TypeNull}}
 		}
 
 	default:
