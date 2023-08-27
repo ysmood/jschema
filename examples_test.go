@@ -39,10 +39,12 @@ func ExampleNew() {
 	//         "type": "array",
 	//         "description": "The children of the node",
 	//         "items": {
-	//           "nullable": true,
 	//           "anyOf": [
 	//             {
 	//               "$ref": "#/components/schemas/Node"
+	//             },
+	//             {
+	//               "type": "null"
 	//             }
 	//           ]
 	//         }

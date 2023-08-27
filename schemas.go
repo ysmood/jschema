@@ -44,8 +44,6 @@ type Schema struct {
 
 	Ref *Ref `json:"$ref,omitempty"`
 
-	Nullable *bool `json:"nullable,omitempty"`
-
 	AnyOf []*Schema `json:"anyOf,omitempty"`
 	Enum  []JVal    `json:"enum,omitempty"`
 
@@ -209,12 +207,11 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 		*scm = *s.DefineT(t.Elem())
 
 		if scm.Ref != nil {
-			scm.AnyOf = []*Schema{{Ref: scm.Ref}}
+			scm.AnyOf = []*Schema{{Ref: scm.Ref}, {Type: TypeNull}}
 			scm.Ref = nil
+		} else {
+			scm.AnyOf = []*Schema{scm, {Type: TypeNull}}
 		}
-
-		boolTrue := true
-		scm.Nullable = &boolTrue
 
 	default:
 		scm.Type = TypeUnknown

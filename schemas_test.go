@@ -89,13 +89,15 @@ func TestCommonSchema(t *testing.T) {
 				"Enum": map[string]interface{}{
 					"$ref": "#/$defs/Enum",
 				},
-				"Obj": map[string]interface{} /* len=2 */ {
-					"anyOf": []interface{} /* len=1 cap=1 */ {
+				"Obj": map[string]interface{}{
+					"anyOf": []interface{} /* len=2 cap=2 */ {
 						map[string]interface{}{
 							"$ref": "#/$defs/Node2",
 						},
+						map[string]interface{}{
+							"type": "null",
+						},
 					},
-					"nullable": true,
 				},
 				"Slice": map[string]interface{} /* len=2 */ {
 					"items": map[string]interface{}{
