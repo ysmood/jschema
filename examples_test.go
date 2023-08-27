@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/NaturalSelectionLabs/jschema"
+	"github.com/NaturalSelectionLabs/jschema/lib/test"
 )
 
 func ExampleNew() {
@@ -78,10 +79,10 @@ func ExampleSchemas() {
 	IMetadata.Define(B(0))
 
 	type Node struct {
-		Name     int      `json:"name"`
-		Metadata Metadata `json:"metadata,omitempty"` // omitempty make this field optional
-		Version  string   `json:"version"`
-		Options  []string `json:"options"`
+		Name     int       `json:"name"`
+		Metadata Metadata  `json:"metadata,omitempty"` // omitempty make this field optional
+		Version  string    `json:"version"`
+		Enum     test.Enum `json:"enum"`
 	}
 
 	schemas.Define(Node{})
@@ -97,11 +98,6 @@ func ExampleSchemas() {
 		node.Properties["version"] = schemas.Const("v1")
 	}
 
-	// Define enum
-	{
-		node.Properties["options"].Enum = jschema.ToJValList(1, 2, 3)
-	}
-
 	fmt.Println(schemas.String())
 
 	// Output:
@@ -115,6 +111,16 @@ func ExampleSchemas() {
 	//     "type": "number",
 	//     "title": "B",
 	//     "description": "github.com/NaturalSelectionLabs/jschema_test.B"
+	//   },
+	//   "Enum": {
+	//     "type": "string",
+	//     "title": "Enum",
+	//     "description": "github.com/NaturalSelectionLabs/jschema/lib/test.Enum",
+	//     "enum": [
+	//       "one",
+	//       "two",
+	//       "three"
+	//     ]
 	//   },
 	//   "Metadata": {
 	//     "title": "Metadata",
@@ -133,23 +139,15 @@ func ExampleSchemas() {
 	//     "title": "Node",
 	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Node",
 	//     "properties": {
+	//       "enum": {
+	//         "$ref": "#/components/schemas/Enum"
+	//       },
 	//       "metadata": {
 	//         "$ref": "#/components/schemas/Metadata"
 	//       },
 	//       "name": {
 	//         "type": "number",
 	//         "default": "jack"
-	//       },
-	//       "options": {
-	//         "type": "array",
-	//         "enum": [
-	//           1,
-	//           2,
-	//           3
-	//         ],
-	//         "items": {
-	//           "type": "string"
-	//         }
 	//       },
 	//       "version": {
 	//         "type": "string",
@@ -161,7 +159,7 @@ func ExampleSchemas() {
 	//     "required": [
 	//       "name",
 	//       "version",
-	//       "options"
+	//       "enum"
 	//     ],
 	//     "additionalProperties": false
 	//   }

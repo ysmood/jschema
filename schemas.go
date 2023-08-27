@@ -108,6 +108,12 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 		return scm
 	}
 
+	if t.Implements(tEnumValues) {
+		scm.Type = TypeString
+		scm.Enum = ToJValList(reflect.New(t).Interface().(EnumValues).Values()...) //nolint: forcetypeassert
+		return &Schema{Ref: &r}
+	}
+
 	//nolint: exhaustive
 	switch t.Kind() {
 	case reflect.Interface:
@@ -222,3 +228,9 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 
 	return scm
 }
+
+type EnumValues interface {
+	Values() []string
+}
+
+var tEnumValues = reflect.TypeOf((*EnumValues)(nil)).Elem()

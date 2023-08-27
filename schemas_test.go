@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/NaturalSelectionLabs/jschema"
+	"github.com/NaturalSelectionLabs/jschema/lib/test"
 	"github.com/ysmood/got"
 )
 
@@ -51,6 +52,7 @@ func TestCommonSchema(t *testing.T) {
 		Slice   []Node1
 		Arr     [2]int
 		Obj     *Node2
+		Enum    test.Enum
 		private int //nolint: unused
 	}
 
@@ -61,11 +63,21 @@ func TestCommonSchema(t *testing.T) {
 		"$ref": "#/$defs/Node1",
 	})
 
-	g.Eq(g.JSON(g.ToJSONString(c.JSON())), map[string]interface{} /* len=2 */ {
+	g.Eq(g.JSON(g.ToJSONString(c.JSON())), map[string]interface{} /* len=3 */ {
+		"Enum": map[string]interface{} /* len=4 */ {
+			"description": `github.com/NaturalSelectionLabs/jschema/lib/test.Enum`, /* len=53 */
+			"enum": []interface{} /* len=3 cap=4 */ {
+				"one",
+				"two",
+				"three",
+			},
+			"title": "Enum",
+			"type":  "string",
+		},
 		"Node1": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Node1`, /* len=61 */
-			"properties": map[string]interface{} /* len=6 */ {
+			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Node1`, /* len=50 */
+			"properties": map[string]interface{} /* len=7 */ {
 				"Arr": map[string]interface{} /* len=4 */ {
 					"items": map[string]interface{}{
 						"type": "number",
@@ -73,6 +85,9 @@ func TestCommonSchema(t *testing.T) {
 					"maxItems": 2.0,
 					"minItems": 2.0,
 					"type":     "array",
+				},
+				"Enum": map[string]interface{}{
+					"$ref": "#/$defs/Enum",
 				},
 				"Obj": map[string]interface{} /* len=2 */ {
 					"anyOf": []interface{} /* len=1 cap=1 */ {
@@ -98,19 +113,20 @@ func TestCommonSchema(t *testing.T) {
 					"type": "number",
 				},
 			},
-			"required": []interface{} /* len=5 cap=8 */ {
+			"required": []interface{} /* len=6 cap=8 */ {
 				"Str",
 				"bool",
 				"Slice",
 				"Arr",
 				"Obj",
+				"Enum",
 			},
 			"title": "Node1",
 			"type":  "object",
 		},
 		"Node2": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Node2`, /* len=61 */
+			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Node2`, /* len=50 */
 			"properties": map[string]interface{} /* len=2 */ {
 				"Any": map[string]interface{}{
 					"type": "object",
