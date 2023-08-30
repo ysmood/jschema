@@ -87,3 +87,10 @@ func ToJValList[T any](list ...T) []JVal {
 
 	return to
 }
+
+func indirectType(t reflect.Type) reflect.Type {
+	if t.Kind() == reflect.Ptr {
+		return t.Elem()
+	}
+	return t
+}
