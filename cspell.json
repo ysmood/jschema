@@ -7,8 +7,12 @@
   "ignorePaths": [],
   // words - list of words to be always considered correct
   "words": [
+    "cyclop",
+    "forcetypeassert",
+    "gocyclo",
     "Interfacer",
     "jschema",
+    "nolint",
     "ysmood"
   ],
   // flagWords - list of words to be always considered incorrect
