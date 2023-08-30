@@ -200,7 +200,14 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 				scm.Required = append(scm.Required, n)
 			}
 
-			scm.Properties[n] = p
+			ps := s.PeakSchema(p)
+			if f.Anonymous && (tag == nil || tag.Name == "") && len(ps.Properties) > 0 {
+				for k, v := range ps.Properties {
+					scm.Properties[k] = v
+				}
+			} else {
+				scm.Properties[n] = p
+			}
 		}
 
 	case reflect.Ptr:
