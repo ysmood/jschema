@@ -63,7 +63,7 @@ func TestCommonSchema(t *testing.T) {
 		"$ref": "#/$defs/Node1",
 	})
 
-	g.Eq(g.JSON(g.ToJSONString(c.JSON())), map[string]interface{} /* len=3 */ {
+	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=3 */ {
 		"Enum": map[string]interface{} /* len=4 */ {
 			"description": `github.com/NaturalSelectionLabs/jschema/lib/test.Enum`, /* len=53 */
 			"enum": []interface{} /* len=3 cap=4 */ {
@@ -172,7 +172,7 @@ func TestHandler(t *testing.T) {
 
 	c.Define(B{})
 
-	g.Eq(g.JSON(g.ToJSONString(c.JSON())), map[string]interface{} /* len=2 */ {
+	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=2 */ {
 		"A": map[string]interface{}{
 			"type": "number",
 		},
@@ -200,7 +200,7 @@ func TestTime(t *testing.T) {
 	c.AddTimeHandler()
 	c.Define(time.Now())
 
-	g.Eq(g.JSON(g.ToJSONString(c.JSON())), map[string]interface{}{
+	g.Eq(g.JSON(c.String()), map[string]interface{}{
 		`Time` /* len=37 */ : map[string]interface{} /* len=3 */ {
 			"description": "time.Time",
 			"title":       "Time",
@@ -216,7 +216,7 @@ func TestBigInt(t *testing.T) {
 	c.AddBigIntHandler()
 	c.Define(big.Int{})
 
-	g.Eq(g.JSON(g.ToJSONString(c.JSON())), map[string]interface{}{
+	g.Eq(g.JSON(c.String()), map[string]interface{}{
 		`Int` /* len=36 */ : map[string]interface{} /* len=3 */ {
 			"description": "math/big.Int",
 			"title":       "Int",
@@ -237,7 +237,7 @@ func TestNameConflict(t *testing.T) {
 	c.Define(time.Time{})
 	c.Define(Time{})
 
-	g.Eq(g.JSON(g.ToJSONString(c.JSON())), map[string]interface{} /* len=2 */ {
+	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=2 */ {
 		"Time": map[string]interface{} /* len=4 */ {
 			`additionalProperties` /* len=20 */ : false,
 			"description":                        "time.Time",
@@ -273,7 +273,7 @@ func TestRawMessage(t *testing.T) {
 
 	c.Define(A{})
 
-	g.Eq(g.JSON(g.ToJSONString(c.JSON())), map[string]interface{} /* len=2 */ {
+	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=2 */ {
 		"A": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
 			"description":                        `github.com/NaturalSelectionLabs/jschema_test.A`, /* len=57 */

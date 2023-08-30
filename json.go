@@ -17,6 +17,7 @@ func (s Schemas) JSON() map[string]*Schema {
 	return m
 }
 
+// String returns a json string representation of the schemas.
 func (s Schemas) String() string {
 	b, err := json.MarshalIndent(s.JSON(), "", "  ")
 	if err != nil {
