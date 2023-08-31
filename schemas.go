@@ -86,12 +86,6 @@ func (s Schemas) add(r Ref, scm *Schema) {
 	}
 }
 
-func (s Schemas) del(r Ref) {
-	if r.Unique() {
-		delete(s.types, r.ID)
-	}
-}
-
 // DefineT converts the t to Schema recursively and append newly meet schemas to the schema list s.
 func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 	r := s.RefT(t)
@@ -184,7 +178,6 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 				for k, v := range ps.Properties {
 					scm.Properties[k] = v
 				}
-				s.del(s.RefT(f.Type))
 				scm.Required = append(scm.Required, ps.Required...)
 				continue
 			}
