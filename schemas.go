@@ -5,13 +5,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+
+	"github.com/ysmood/vary"
 )
 
 type Schemas struct {
-	refPrefix string
-	types     Types
-	handlers  map[Ref]Handler
-	names     map[string]map[string]int
+	refPrefix  string
+	types      Types
+	handlers   map[Ref]Handler
+	names      map[string]map[string]int
+	interfaces vary.Interfaces
 }
 
 type Types map[string]*Schema
@@ -25,11 +28,18 @@ func New(refPrefix string) Schemas {
 	}
 
 	return Schemas{
-		refPrefix: refPrefix,
-		types:     Types{},
-		handlers:  map[Ref]Handler{},
-		names:     map[string]map[string]int{},
+		refPrefix:  refPrefix,
+		types:      Types{},
+		handlers:   map[Ref]Handler{},
+		names:      map[string]map[string]int{},
+		interfaces: vary.Default,
 	}
+}
+
+func NewWithInterfaces(refPrefix string, interfaces vary.Interfaces) Schemas {
+	s := New(refPrefix)
+	s.interfaces = interfaces
+	return s
 }
 
 // Schema is designed for typescript conversion.
@@ -110,6 +120,10 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 		scm.Type = TypeString
 		scm.Enum = ToJValList(reflect.New(t).Interface().(EnumValues).Values()...) //nolint: forcetypeassert
 		return &Schema{Ref: &r}
+	}
+
+	if iter := s.interfaces[vary.NewID(t)]; iter != nil {
+		return s.defineInstances(iter)
 	}
 
 	//nolint: exhaustive
@@ -233,6 +247,19 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 		scm = &Schema{
 			Ref: &r,
 		}
+	}
+
+	return scm
+}
+
+func (s Schemas) defineInstances(i *vary.Interface) *Schema {
+	scm := s.DefineT(i.Self)
+	is := s.PeakSchema(scm)
+	is.Type = ""
+
+	for _, p := range i.Implementations {
+		ps := s.DefineT(p)
+		is.AnyOf = append(is.AnyOf, ps)
 	}
 
 	return scm

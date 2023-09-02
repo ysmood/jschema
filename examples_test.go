@@ -6,6 +6,7 @@ import (
 
 	"github.com/NaturalSelectionLabs/jschema"
 	"github.com/NaturalSelectionLabs/jschema/lib/test"
+	"github.com/ysmood/vary"
 )
 
 func ExampleNew() {
@@ -70,15 +71,15 @@ func ExampleSchemas() {
 	type Metadata interface{}
 
 	// Make the metadata field accept either A or B
-	IMetadata := jschema.DefineI(schemas, new(Metadata))
+	iMetadata := vary.New(new(Metadata))
 
 	type A string
 
-	IMetadata.Define(A(""))
+	iMetadata.Add(A(""))
 
 	type B int
 
-	IMetadata.Define(B(0))
+	iMetadata.Add(B(0))
 
 	type Node struct {
 		Name     int       `json:"name"`
