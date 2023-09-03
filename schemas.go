@@ -73,6 +73,7 @@ type SchemaType string
 const (
 	TypeString  SchemaType = "string"
 	TypeNumber  SchemaType = "number"
+	TypeInteger SchemaType = "integer"
 	TypeObject  SchemaType = "object"
 	TypeArray   SchemaType = "array"
 	TypeBool    SchemaType = "boolean"
@@ -138,8 +139,10 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 		scm.Type = TypeString
 
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
-		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
-		reflect.Float32, reflect.Float64,
+		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		scm.Type = TypeInteger
+
+	case reflect.Float32, reflect.Float64,
 		reflect.Uintptr, reflect.Complex64, reflect.Complex128:
 		scm.Type = TypeNumber
 

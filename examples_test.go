@@ -51,7 +51,7 @@ func ExampleNew() {
 	//         }
 	//       },
 	//       "id": {
-	//         "type": "number",
+	//         "type": "integer",
 	//         "default": 1
 	//       }
 	//     },
@@ -82,7 +82,7 @@ func ExampleSchemas() {
 	iMetadata.Add(B(0))
 
 	type Node struct {
-		Name     int       `json:"name"`
+		Name     string    `json:"name"`
 		Metadata Metadata  `json:"metadata,omitempty"` // omitempty make this field optional
 		Version  string    `json:"version"`
 		Enum     test.Enum `json:"enum"`
@@ -111,7 +111,7 @@ func ExampleSchemas() {
 	//     "description": "github.com/NaturalSelectionLabs/jschema_test.A"
 	//   },
 	//   "B": {
-	//     "type": "number",
+	//     "type": "integer",
 	//     "title": "B",
 	//     "description": "github.com/NaturalSelectionLabs/jschema_test.B"
 	//   },
@@ -149,7 +149,7 @@ func ExampleSchemas() {
 	//         "$ref": "#/components/schemas/Metadata"
 	//       },
 	//       "name": {
-	//         "type": "number",
+	//         "type": "string",
 	//         "default": "jack"
 	//       },
 	//       "version": {

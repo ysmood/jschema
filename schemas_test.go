@@ -43,7 +43,7 @@ func TestCommonSchema(t *testing.T) {
 	c := jschema.New("")
 
 	type Node2 struct {
-		Map map[string]int
+		Map map[string]float64
 		Any interface{}
 	}
 
@@ -53,7 +53,7 @@ func TestCommonSchema(t *testing.T) {
 		Bool    bool   `json:"bool"`
 		Ignore  string `json:"-"`
 		Slice   []Node1
-		Arr     [2]int
+		Arr     [2]float64
 		Obj     *Node2
 		Enum    test.Enum
 		private int //nolint: unused
@@ -115,7 +115,7 @@ func TestCommonSchema(t *testing.T) {
 					"type": "boolean",
 				},
 				"num": map[string]interface{}{
-					"type": "number",
+					"type": "integer",
 				},
 			},
 			"required": []interface{} /* len=6 cap=8 */ {
@@ -317,7 +317,7 @@ func TestEmbeddedStruct(t *testing.T) {
 	g := got.T(t)
 
 	type A struct {
-		Val int
+		Val float64
 	}
 
 	type B struct {
@@ -432,10 +432,10 @@ func TestAnyOf(t *testing.T) {
 			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Rectangle`, /* len=54 */
 			"properties": map[string]interface{} /* len=2 */ {
 				"Height": map[string]interface{}{
-					"type": "number",
+					"type": "integer",
 				},
 				"Width": map[string]interface{}{
-					"type": "number",
+					"type": "integer",
 				},
 			},
 			"required": []interface{} /* len=2 cap=2 */ {
