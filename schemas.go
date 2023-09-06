@@ -123,7 +123,7 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 		return &Schema{Ref: &r}
 	}
 
-	if iter := s.interfaces[vary.NewID(t)]; iter != nil {
+	if iter := s.interfaces[vary.ID(t)]; iter != nil {
 		return s.defineInstances(iter)
 	}
 
