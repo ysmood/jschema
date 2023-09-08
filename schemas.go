@@ -119,9 +119,13 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 		return scm
 	}
 
-	if t.Implements(tEnumValues) {
-		scm.Type = TypeString
-		scm.Enum = ToJValList(reflect.New(t).Interface().(EnumValues).Values()...) //nolint: forcetypeassert
+	if implements(t, tEnumString) {
+		scm.Enum = ToJValList(reflect.New(t).Interface().(EnumString).Values()...) //nolint: forcetypeassert
+		return &Schema{Ref: &r}
+	}
+
+	if implements(t, tEnum) {
+		scm.Enum = ToJValList(reflect.New(t).Interface().(Enum).Values()...) //nolint: forcetypeassert
 		return &Schema{Ref: &r}
 	}
 
@@ -283,12 +287,6 @@ func (s Schemas) defineInstances(i *vary.Interface) *Schema {
 
 	return scm
 }
-
-type EnumValues interface {
-	Values() []string
-}
-
-var tEnumValues = reflect.TypeOf((*EnumValues)(nil)).Elem()
 
 func jsonValTag(t reflect.StructTag, tagName, fieldName string) (JVal, bool) { //nolint: ireturn
 	tag := t.Get(tagName)

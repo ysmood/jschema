@@ -2,9 +2,11 @@ package jschema_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"math/big"
 	"reflect"
+	"strconv"
 	"testing"
 	"time"
 
@@ -67,7 +69,7 @@ func TestCommonSchema(t *testing.T) {
 	})
 
 	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=3 */ {
-		"Enum": map[string]interface{} /* len=4 */ {
+		"Enum": map[string]interface{} /* len=3 */ {
 			"description": `github.com/NaturalSelectionLabs/jschema/lib/test.Enum`, /* len=53 */
 			"enum": []interface{} /* len=3 cap=4 */ {
 				"one",
@@ -75,7 +77,6 @@ func TestCommonSchema(t *testing.T) {
 				"three",
 			},
 			"title": "Enum",
-			"type":  "string",
 		},
 		"Node1": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
@@ -192,6 +193,63 @@ func TestHandler(t *testing.T) {
 			},
 			"title": "B",
 			"type":  "object",
+		},
+	})
+}
+
+type Enum int
+
+func (Enum) Values() []json.RawMessage {
+	list := []json.RawMessage{}
+
+	for _, v := range []Enum{One, Two} {
+		b, _ := v.MarshalJSON()
+		list = append(list, json.RawMessage(b))
+	}
+
+	return list
+}
+
+func (e Enum) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf(`"%d"`, e)), nil
+}
+
+func (e *Enum) UnmarshalJSON(b []byte) error {
+	var s string
+	err := json.Unmarshal(b, &s)
+	if err != nil {
+		return err
+	}
+
+	i, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	*e = Enum(i)
+	return nil
+}
+
+const (
+	One Enum = 1
+	Two Enum = 2
+)
+
+func TestEnum(t *testing.T) {
+	g := got.T(t)
+
+	c := jschema.New("")
+
+	c.Define(Enum(0))
+
+	g.Eq(g.JSON(c.String()), map[string]interface{}{
+		"Enum": map[string]interface{} /* len=3 */ {
+			"description": `github.com/NaturalSelectionLabs/jschema_test.Enum`, /* len=49 */
+			"enum": []interface{} /* len=2 cap=2 */ {
+				"1",
+				"2",
+			},
+			"title": "Enum",
 		},
 	})
 }

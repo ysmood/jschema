@@ -83,10 +83,13 @@ func ExampleSchemas() {
 	iMetadata.Add(B(0))
 
 	type Node struct {
-		Name     string    `json:"name"`
-		Metadata Metadata  `json:"metadata,omitempty"` // omitempty make this field optional
-		Version  string    `json:"version"`
-		Enum     test.Enum `json:"enum"`
+		Name     string   `json:"name"`
+		Metadata Metadata `json:"metadata,omitempty"` // omitempty make this field optional
+		Version  string   `json:"version"`
+		// jschema supports github.com/dmarkham/enumer generated enum
+		// The enum type must implements [jschema.Enum] or [jschema.EnumString].
+		// Otherwise, it will be treated as a normal type.
+		Enum test.Enum `json:"enum"`
 	}
 
 	schemas.Define(Node{})
@@ -117,7 +120,6 @@ func ExampleSchemas() {
 	//     "description": "github.com/NaturalSelectionLabs/jschema_test.B"
 	//   },
 	//   "Enum": {
-	//     "type": "string",
 	//     "title": "Enum",
 	//     "description": "github.com/NaturalSelectionLabs/jschema/lib/test.Enum",
 	//     "enum": [

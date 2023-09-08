@@ -94,3 +94,9 @@ func indirectType(t reflect.Type) reflect.Type {
 	}
 	return t
 }
+
+// Check if x or x's pointer implements y.
+// x can be a direct value or a pointer to the a direct value.
+func implements(x, y reflect.Type) bool {
+	return x.Implements(y) || reflect.New(x).Type().Implements(y)
+}
