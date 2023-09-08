@@ -15,5 +15,5 @@ github.com/ysmood/gop v0.1.0 h1:BkW6hF0j/hZNyZv+FOPU7op1zuDqRa7x7GJyygb5uf4=
 github.com/ysmood/gop v0.1.0/go.mod h1:rr5z2z27oGEbyB787hpEcx4ab8cCiPnKxn0SUHt6xzk=
 github.com/ysmood/got v0.35.0 h1:AA9QDCcSuueB9H8OexNHj+VKU1iMDekyS9hWFAApwho=
 github.com/ysmood/got v0.35.0/go.mod h1:R7naGpP/qR1i9b5xOCkQnfuEAUPq0TROuTffdxbJoIc=
-github.com/ysmood/vary v0.3.0 h1:Lm0xFvy5Y2pFZqzx4pQI0lttfMRp3Ru2gGiwPVVdfHk=
-github.com/ysmood/vary v0.3.0/go.mod h1:X9WYOJwS8Hyeh7Qs08haaeelNru/UIOPUggUnRwxHmM=
+github.com/ysmood/vary v0.3.1 h1:ccaRjykuPuLDJZUSNblbvhLf2xiiAdznuIDamxbbHkw=
+github.com/ysmood/vary v0.3.1/go.mod h1:X9WYOJwS8Hyeh7Qs08haaeelNru/UIOPUggUnRwxHmM=
