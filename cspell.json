@@ -11,6 +11,7 @@
     "forcetypeassert",
     "gocyclo",
     "Interfacer",
+    "ireturn",
     "jschema",
     "nolint",
     "ysmood"

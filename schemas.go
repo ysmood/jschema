@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"sort"
 
 	"github.com/ysmood/vary"
 )
@@ -66,6 +67,7 @@ type Schema struct {
 	MinItems *int    `json:"minItems,omitempty"`
 	MaxItems *int    `json:"maxItems,omitempty"`
 	Default  JVal    `json:"default,omitempty"`
+	Example  JVal    `json:"example,omitempty"`
 }
 
 type SchemaType string
@@ -204,14 +206,12 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 				p.Description = desc
 			}
 
-			defaultVal := f.Tag.Get("default")
-			if defaultVal != "" {
-				var d JVal
-				err := json.Unmarshal([]byte(defaultVal), &d)
-				if err != nil {
-					panic(fmt.Errorf("default value is invalid json string for %s: %w", n, err))
-				}
-				p.Default = d
+			if val, has := jsonValTag(f.Tag, "default", n); has {
+				p.Default = val
+			}
+
+			if val, has := jsonValTag(f.Tag, "example", n); has {
+				p.Example = val
 			}
 
 			if tag != nil {
@@ -260,8 +260,24 @@ func (s Schemas) defineInstances(i *vary.Interface) *Schema {
 	is := s.PeakSchema(scm)
 	is.Type = ""
 
-	for _, p := range i.Implementations {
-		ps := s.DefineT(p)
+	imps := []struct {
+		key vary.TypeID
+		typ reflect.Type
+	}{}
+
+	for id, p := range i.Implementations {
+		imps = append(imps, struct {
+			key vary.TypeID
+			typ reflect.Type
+		}{id, p})
+	}
+
+	sort.Slice(imps, func(i, j int) bool {
+		return imps[i].key < imps[j].key
+	})
+
+	for _, p := range imps {
+		ps := s.DefineT(p.typ)
 		is.AnyOf = append(is.AnyOf, ps)
 	}
 
@@ -273,3 +289,16 @@ type EnumValues interface {
 }
 
 var tEnumValues = reflect.TypeOf((*EnumValues)(nil)).Elem()
+
+func jsonValTag(t reflect.StructTag, tagName, fieldName string) (JVal, bool) { //nolint: ireturn
+	tag := t.Get(tagName)
+	if tag != "" {
+		var d JVal
+		err := json.Unmarshal([]byte(tag), &d)
+		if err != nil {
+			panic(fmt.Errorf("value of %s tag is invalid json string for %s: %w", tagName, fieldName, err))
+		}
+		return d, true
+	}
+	return nil, false
+}

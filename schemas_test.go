@@ -446,16 +446,16 @@ func TestAnyOf(t *testing.T) {
 			"type":  "object",
 		},
 		"Shape": map[string]interface{} /* len=3 */ {
-			"description": `github.com/NaturalSelectionLabs/jschema_test.Shape`, /* len=50 */
 			"anyOf": []interface{} /* len=2 cap=2 */ {
-				map[string]interface{}{
-					"$ref": `#/$defs/Rectangle`, /* len=17 */
-				},
 				map[string]interface{}{
 					"$ref": "#/$defs/Circle",
 				},
+				map[string]interface{}{
+					"$ref": `#/$defs/Rectangle`, /* len=17 */
+				},
 			},
-			"title": "Shape",
+			"description": `github.com/NaturalSelectionLabs/jschema_test.Shape`, /* len=50 */
+			"title":       "Shape",
 		},
 	})
 

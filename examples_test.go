@@ -14,7 +14,7 @@ func ExampleNew() {
 		// The default tag only accepts json string.
 		// So if you want to set a string value "jack",
 		// you should use "\"jack\"" instead of "jack" for the field tag
-		ID int `json:"id" default:"1"`
+		ID int `json:"id" default:"1" example:"2"`
 
 		// Use the description tag to set the description of the field
 		Children []*Node `json:"children" description:"The children of the node"`
@@ -52,7 +52,8 @@ func ExampleNew() {
 	//       },
 	//       "id": {
 	//         "type": "integer",
-	//         "default": 1
+	//         "default": 1,
+	//         "example": 2
 	//       }
 	//     },
 	//     "required": [
