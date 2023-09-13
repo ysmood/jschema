@@ -50,7 +50,7 @@ func TestCommonSchema(t *testing.T) {
 	}
 
 	type Node1 struct {
-		Str     string
+		Str     string `format:"email" pattern:"."`
 		Num     int    `json:"num,omitempty"`
 		Bool    bool   `json:"bool"`
 		Ignore  string `json:"-"`
@@ -109,8 +109,10 @@ func TestCommonSchema(t *testing.T) {
 					},
 					"type": "array",
 				},
-				"Str": map[string]interface{}{
-					"type": "string",
+				"Str": map[string]interface{} /* len=3 */ {
+					"format":  "email",
+					"pattern": ".",
+					"type":    "string",
 				},
 				"bool": map[string]interface{}{
 					"type": "boolean",
@@ -340,8 +342,7 @@ func TestRawMessage(t *testing.T) {
 			"description":                        `github.com/NaturalSelectionLabs/jschema_test.A`, /* len=57 */
 			"properties": map[string]interface{}{
 				"A": map[string]interface{} /* len=2 */ {
-					"description": `encoding/json.RawMessage`, /* len=24 */
-					"title":       "RawMessage",
+					"title": "RawMessage",
 				},
 			},
 			"required": []interface{} /* len=1 cap=1 */ {
@@ -351,8 +352,7 @@ func TestRawMessage(t *testing.T) {
 			"type":  "object",
 		},
 		"RawMessage": map[string]interface{} /* len=2 */ {
-			"description": `encoding/json.RawMessage`, /* len=24 */
-			"title":       "RawMessage",
+			"title": "RawMessage",
 		},
 	})
 }

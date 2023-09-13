@@ -200,8 +200,7 @@ func Example_custom_handler() {
 	//     "properties": {
 	//       "time": {
 	//         "type": "number",
-	//         "title": "Time",
-	//         "description": "time.Time"
+	//         "title": "Time"
 	//       }
 	//     },
 	//     "required": [
@@ -211,8 +210,7 @@ func Example_custom_handler() {
 	//   },
 	//   "Time": {
 	//     "type": "number",
-	//     "title": "Time",
-	//     "description": "time.Time"
+	//     "title": "Time"
 	//   }
 	// }
 }

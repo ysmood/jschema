@@ -68,6 +68,8 @@ type Schema struct {
 	MaxItems *int    `json:"maxItems,omitempty"`
 	Default  JVal    `json:"default,omitempty"`
 	Example  JVal    `json:"example,omitempty"`
+	Format   string  `json:"format,omitempty"`
+	Pattern  string  `json:"pattern,omitempty"`
 }
 
 type SchemaType string
@@ -205,10 +207,9 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 				continue
 			}
 
-			desc := f.Tag.Get("description")
-			if desc != "" {
-				p.Description = desc
-			}
+			p.Description = f.Tag.Get("description")
+			p.Format = f.Tag.Get("format")
+			p.Pattern = f.Tag.Get("pattern")
 
 			if val, has := jsonValTag(f.Tag, "default", n); has {
 				p.Default = val
