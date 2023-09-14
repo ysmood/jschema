@@ -76,6 +76,8 @@ type Schema struct {
 	// Object validation
 	Required             Required `json:"required,omitempty"`
 	AdditionalProperties *bool    `json:"additionalProperties,omitempty"`
+
+	Defs Types `json:"$defs,omitempty"`
 }
 
 type Required []string

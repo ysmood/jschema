@@ -575,3 +575,54 @@ func TestAnyOf(t *testing.T) {
 		g.Eq(result.Errors()[1].String(), "(root): Additional property Radius is not allowed")
 	}
 }
+
+func TestSchemaT(t *testing.T) {
+	g := got.T(t)
+	{
+		s := jschema.New("")
+		c := s.SchemaT(reflect.TypeOf([]int{}))
+
+		g.Eq(g.JSON(c.String()), map[string]interface{} /* len=2 */ {
+			"items": map[string]interface{}{
+				"type": "integer",
+			},
+			"type": "array",
+		})
+	}
+
+	{
+		type A struct{}
+		type B struct {
+			A A
+		}
+
+		s := jschema.New("")
+		c := s.SchemaT(reflect.TypeOf(B{}))
+
+		g.Eq(g.JSON(c.String()), map[string]interface{} /* len=2 */ {
+			"$defs": map[string]interface{} /* len=2 */ {
+				"A": map[string]interface{} /* len=4 */ {
+					`additionalProperties` /* len=20 */ : false,
+					"description":                        `github.com/NaturalSelectionLabs/jschema_test.A`, /* len=46 */
+					"title":                              "A",
+					"type":                               "object",
+				},
+				"B": map[string]interface{} /* len=6 */ {
+					`additionalProperties` /* len=20 */ : false,
+					"description":                        `github.com/NaturalSelectionLabs/jschema_test.B`, /* len=46 */
+					"properties": map[string]interface{}{
+						"A": map[string]interface{}{
+							"$ref": "#/$defs/A",
+						},
+					},
+					"required": []interface{} /* len=1 cap=1 */ {
+						"A",
+					},
+					"title": "B",
+					"type":  "object",
+				},
+			},
+			"$ref": "#/$defs/B",
+		})
+	}
+}

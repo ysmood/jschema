@@ -26,6 +26,14 @@ func (s Schemas) String() string {
 	return string(b)
 }
 
+func (s *Schema) String() string {
+	b, err := json.MarshalIndent(s, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
+}
+
 type Tag struct {
 	Name      string
 	Ignore    bool

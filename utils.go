@@ -78,6 +78,22 @@ func (s *Schemas) Const(v JVal) *Schema {
 	return ss
 }
 
+// SchemaT returns a standalone schema for the given type.
+func (s *Schemas) SchemaT(t reflect.Type) *Schema {
+	scm := s.DefineT(t)
+
+	if scm.Ref != nil {
+		return &Schema{
+			Ref:  scm.Ref,
+			Defs: s.types,
+		}
+	}
+
+	scm.Defs = s.types
+
+	return scm
+}
+
 func ToJValList[T any](list ...T) []JVal {
 	to := []JVal{}
 
