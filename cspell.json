@@ -8,11 +8,14 @@
   // words - list of words to be always considered correct
   "words": [
     "cyclop",
+    "dmarkham",
+    "enumer",
     "forcetypeassert",
     "gocyclo",
     "Interfacer",
     "ireturn",
     "jschema",
+    "maintidx",
     "nolint",
     "ysmood"
   ],

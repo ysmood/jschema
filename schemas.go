@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
+	"strconv"
 
 	"github.com/ysmood/vary"
 )
@@ -46,30 +47,35 @@ func NewWithInterfaces(refPrefix string, interfaces vary.Interfaces) Schemas {
 // Schema is designed for typescript conversion.
 // Its fields is a strict subset of json schema fields.
 type Schema struct {
-	// string, number, boolean, null, array, object
-	Type SchemaType `json:"type,omitempty"`
-
-	Title string `json:"title,omitempty"`
-
+	Title       string `json:"title,omitempty"`
 	Description string `json:"description,omitempty"`
+	Default     JVal   `json:"default,omitempty"`
+	Example     JVal   `json:"example,omitempty"`
 
-	Ref *Ref `json:"$ref,omitempty"`
+	// Any type validation
+	AnyOf             []*Schema  `json:"anyOf,omitempty"`
+	Ref               *Ref       `json:"$ref,omitempty"`
+	Type              SchemaType `json:"type,omitempty"` // string, number, boolean, null, array, object
+	Enum              []JVal     `json:"enum,omitempty"`
+	Properties        Properties `json:"properties,omitempty"`
+	PatternProperties Properties `json:"patternProperties,omitempty"`
+	Format            string     `json:"format,omitempty"`
 
-	AnyOf []*Schema `json:"anyOf,omitempty"`
-	Enum  []JVal    `json:"enum,omitempty"`
+	// Number validation
+	Maximum *float64 `json:"maximum,omitempty"`
+	Minimum *float64 `json:"minimum,omitempty"`
 
-	Properties           Properties `json:"properties,omitempty"`
-	PatternProperties    Properties `json:"patternProperties,omitempty"`
-	Required             []string   `json:"required,omitempty"`
-	AdditionalProperties *bool      `json:"additionalProperties,omitempty"`
+	// String validation
+	Pattern string `json:"pattern,omitempty"`
 
+	// Array validation
 	Items    *Schema `json:"items,omitempty"`
 	MinItems *int    `json:"minItems,omitempty"`
 	MaxItems *int    `json:"maxItems,omitempty"`
-	Default  JVal    `json:"default,omitempty"`
-	Example  JVal    `json:"example,omitempty"`
-	Format   string  `json:"format,omitempty"`
-	Pattern  string  `json:"pattern,omitempty"`
+
+	// Object validation
+	Required             []string `json:"required,omitempty"`
+	AdditionalProperties *bool    `json:"additionalProperties,omitempty"`
 }
 
 type SchemaType string
@@ -102,7 +108,7 @@ func (s Schemas) add(r Ref, scm *Schema) {
 }
 
 // DefineT converts the t to Schema recursively and append newly meet schemas to the schema list s.
-func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
+func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo,maintidx
 	r := s.RefT(t)
 	if s.has(r) {
 		return &Schema{Ref: &r}
@@ -209,7 +215,6 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 
 			p.Description = f.Tag.Get("description")
 			p.Format = f.Tag.Get("format")
-			p.Pattern = f.Tag.Get("pattern")
 
 			if val, has := jsonValTag(f.Tag, "default", n); has {
 				p.Default = val
@@ -225,6 +230,24 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 				}
 				if tag.String {
 					p.Type = TypeString
+				}
+			}
+
+			if p.Type == TypeString {
+				p.Pattern = f.Tag.Get("pattern")
+			}
+
+			if p.Type == TypeNumber || p.Type == TypeInteger {
+				p.Minimum = toNum(f.Tag.Get("min"))
+				p.Maximum = toNum(f.Tag.Get("max"))
+			}
+
+			if p.Type == TypeArray {
+				if p.MinItems == nil {
+					p.MinItems = toInt(f.Tag.Get("min"))
+				}
+				if p.MaxItems == nil {
+					p.MaxItems = toInt(f.Tag.Get("max"))
 				}
 			}
 
@@ -300,4 +323,21 @@ func jsonValTag(t reflect.StructTag, tagName, fieldName string) (JVal, bool) { /
 		return d, true
 	}
 	return nil, false
+}
+
+func toNum(v string) *float64 {
+	f, err := strconv.ParseFloat(v, 64)
+	if err != nil {
+		return nil
+	}
+	return &f
+}
+
+func toInt(v string) *int {
+	i, err := strconv.ParseInt(v, 10, 64)
+	if err != nil {
+		return nil
+	}
+	ii := int(i)
+	return &ii
 }

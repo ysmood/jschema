@@ -14,10 +14,10 @@ func ExampleNew() {
 		// The default tag only accepts json string.
 		// So if you want to set a string value "jack",
 		// you should use "\"jack\"" instead of "jack" for the field tag
-		ID int `json:"id" default:"1" example:"2"`
+		ID int `json:"id" default:"1" example:"2" min:"0" max:"100"`
 
 		// Use the description tag to set the description of the field
-		Children []*Node `json:"children" description:"The children of the node"`
+		Children []*Node `json:"children" description:"The children of the node" min:"0" max:"10"`
 	}
 
 	// Create a schema list instance
@@ -32,13 +32,13 @@ func ExampleNew() {
 	// Output:
 	// {
 	//   "Node": {
-	//     "type": "object",
 	//     "title": "Node",
 	//     "description": "A node in the tree",
+	//     "type": "object",
 	//     "properties": {
 	//       "children": {
-	//         "type": "array",
 	//         "description": "The children of the node",
+	//         "type": "array",
 	//         "items": {
 	//           "anyOf": [
 	//             {
@@ -48,12 +48,16 @@ func ExampleNew() {
 	//               "type": "null"
 	//             }
 	//           ]
-	//         }
+	//         },
+	//         "minItems": 0,
+	//         "maxItems": 10
 	//       },
 	//       "id": {
-	//         "type": "integer",
 	//         "default": 1,
-	//         "example": 2
+	//         "example": 2,
+	//         "type": "integer",
+	//         "maximum": 100,
+	//         "minimum": 0
 	//       }
 	//     },
 	//     "required": [
@@ -83,7 +87,8 @@ func ExampleSchemas() {
 	iMetadata.Add(B(0))
 
 	type Node struct {
-		Name     string   `json:"name"`
+		// Use the pattern or format tag to set the standard json schema validation rule
+		Name     string   `json:"name" pattern:"^[a-z]+$" format:"name"`
 		Metadata Metadata `json:"metadata,omitempty"` // omitempty make this field optional
 		Version  string   `json:"version"`
 		// jschema supports github.com/dmarkham/enumer generated enum
@@ -110,14 +115,14 @@ func ExampleSchemas() {
 	// Output:
 	// {
 	//   "A": {
-	//     "type": "string",
 	//     "title": "A",
-	//     "description": "github.com/NaturalSelectionLabs/jschema_test.A"
+	//     "description": "github.com/NaturalSelectionLabs/jschema_test.A",
+	//     "type": "string"
 	//   },
 	//   "B": {
-	//     "type": "integer",
 	//     "title": "B",
-	//     "description": "github.com/NaturalSelectionLabs/jschema_test.B"
+	//     "description": "github.com/NaturalSelectionLabs/jschema_test.B",
+	//     "type": "integer"
 	//   },
 	//   "Enum": {
 	//     "title": "Enum",
@@ -141,9 +146,9 @@ func ExampleSchemas() {
 	//     ]
 	//   },
 	//   "Node": {
-	//     "type": "object",
 	//     "title": "Node",
 	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Node",
+	//     "type": "object",
 	//     "properties": {
 	//       "enum": {
 	//         "$ref": "#/components/schemas/Enum"
@@ -152,8 +157,10 @@ func ExampleSchemas() {
 	//         "$ref": "#/components/schemas/Metadata"
 	//       },
 	//       "name": {
+	//         "default": "jack",
 	//         "type": "string",
-	//         "default": "jack"
+	//         "format": "name",
+	//         "pattern": "^[a-z]+$"
 	//       },
 	//       "version": {
 	//         "type": "string",
@@ -194,13 +201,13 @@ func Example_custom_handler() {
 	// Output:
 	// {
 	//   "Data": {
-	//     "type": "object",
 	//     "title": "Data",
 	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Data",
+	//     "type": "object",
 	//     "properties": {
 	//       "time": {
-	//         "type": "number",
-	//         "title": "Time"
+	//         "title": "Time",
+	//         "type": "number"
 	//       }
 	//     },
 	//     "required": [
@@ -209,8 +216,8 @@ func Example_custom_handler() {
 	//     "additionalProperties": false
 	//   },
 	//   "Time": {
-	//     "type": "number",
-	//     "title": "Time"
+	//     "title": "Time",
+	//     "type": "number"
 	//   }
 	// }
 }
