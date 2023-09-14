@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/xeipuuv/gojsonschema v1.2.0
 	github.com/ysmood/got v0.35.0
-	github.com/ysmood/vary v0.3.1
+	github.com/ysmood/vary v0.3.2
 )
 
 require (

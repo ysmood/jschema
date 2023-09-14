@@ -100,3 +100,21 @@ func indirectType(t reflect.Type) reflect.Type {
 func implements(x, y reflect.Type) bool {
 	return x.Implements(y) || reflect.New(x).Type().Implements(y)
 }
+
+// Add names to the list if they are not in the list.
+func (r *Required) Add(names ...string) {
+	for _, name := range names {
+		if !r.Has(name) {
+			*r = append(*r, name)
+		}
+	}
+}
+
+func (r *Required) Has(name string) bool {
+	for _, n := range *r {
+		if n == name {
+			return true
+		}
+	}
+	return false
+}

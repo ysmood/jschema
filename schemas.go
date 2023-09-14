@@ -74,9 +74,11 @@ type Schema struct {
 	MaxItems *int    `json:"maxItems,omitempty"`
 
 	// Object validation
-	Required             []string `json:"required,omitempty"`
+	Required             Required `json:"required,omitempty"`
 	AdditionalProperties *bool    `json:"additionalProperties,omitempty"`
 }
+
+type Required []string
 
 type SchemaType string
 
@@ -108,7 +110,7 @@ func (s Schemas) add(r Ref, scm *Schema) {
 }
 
 // DefineT converts the t to Schema recursively and append newly meet schemas to the schema list s.
-func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
+func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 	r := s.RefT(t)
 	if s.has(r) {
 		return &Schema{Ref: &r}
@@ -185,53 +187,9 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 
 	case reflect.Struct:
 		scm.Type = TypeObject
-		scm.Properties = Properties{}
 		scm.AdditionalProperties = new(bool)
 		for i := 0; i < t.NumField(); i++ {
-			f := t.Field(i)
-
-			if !f.IsExported() {
-				continue
-			}
-
-			tag := ParseJSONTag(f.Tag)
-
-			if tag != nil && tag.Ignore {
-				continue
-			}
-
-			p := s.DefineT(f.Type)
-
-			ps := s.PeakSchema(p)
-			if f.Anonymous && (tag == nil || tag.Name == "") && indirectType(f.Type).Kind() == reflect.Struct {
-				for k, v := range ps.Properties {
-					scm.Properties[k] = v
-				}
-				scm.Required = append(scm.Required, ps.Required...)
-				continue
-			}
-
-			n := f.Name
-
-			if tag != nil {
-				if tag.Name != "" {
-					n = tag.Name
-				}
-				if tag.String {
-					p.Type = TypeString
-				}
-			}
-
-			err := p.loadTags(f.Tag)
-			if err != nil {
-				panic(fmt.Errorf("fail to load tag on field %s: %w", f.Name, err))
-			}
-
-			scm.Properties[n] = p
-
-			if tag == nil || !tag.Omitempty {
-				scm.Required = append(scm.Required, n)
-			}
+			scm.mergeProps(s.DefineFieldT(t.Field(i)))
 		}
 
 	case reflect.Ptr:
@@ -254,6 +212,55 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 		scm = &Schema{
 			Ref: &r,
 		}
+	}
+
+	return scm
+}
+
+func (s Schemas) DefineFieldT(f reflect.StructField) *Schema { //nolint: cyclop
+	scm := &Schema{
+		Properties: Properties{},
+	}
+
+	if !f.IsExported() {
+		return nil
+	}
+
+	tag := ParseJSONTag(f.Tag)
+
+	if tag != nil && tag.Ignore {
+		return nil
+	}
+
+	if f.Anonymous && (tag == nil || tag.Name == "") && indirectType(f.Type).Kind() == reflect.Struct {
+		for i := 0; i < f.Type.NumField(); i++ {
+			scm.mergeProps(s.DefineFieldT(f.Type.Field(i)))
+		}
+		return scm
+	}
+
+	p := s.DefineT(f.Type)
+
+	err := p.loadTags(f.Tag)
+	if err != nil {
+		panic(fmt.Errorf("fail to load tag on field %s: %w", f.Name, err))
+	}
+
+	n := f.Name
+
+	if tag != nil {
+		if tag.Name != "" {
+			n = tag.Name
+		}
+		if tag.String {
+			p.Type = TypeString
+		}
+	}
+
+	scm.Properties[n] = p
+
+	if tag == nil || !tag.Omitempty {
+		scm.Required.Add(n)
 	}
 
 	return scm
@@ -352,4 +359,21 @@ func (s *Schema) loadTags(t reflect.StructTag) error {
 	}
 
 	return nil
+}
+
+func (s *Schema) mergeProps(target *Schema) {
+	if s.Properties == nil {
+		s.Properties = Properties{}
+	}
+
+	if target == nil {
+		return
+	}
+
+	for k, v := range target.Properties {
+		if _, has := s.Properties[k]; !has {
+			s.Properties[k] = v
+		}
+	}
+	s.Required.Add(target.Required...)
 }

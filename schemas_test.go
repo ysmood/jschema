@@ -434,20 +434,6 @@ func TestEmbeddedStruct(t *testing.T) {
 	c.Define(B{})
 
 	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=2 */ {
-		"A": map[string]interface{} /* len=6 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.A`, /* len=46 */
-			"properties": map[string]interface{}{
-				"Val": map[string]interface{}{
-					"type": "number",
-				},
-			},
-			"required": []interface{} /* len=1 cap=1 */ {
-				"Val",
-			},
-			"title": "A",
-			"type":  "object",
-		},
 		"B": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
 			"description":                        `github.com/NaturalSelectionLabs/jschema_test.B`, /* len=46 */
