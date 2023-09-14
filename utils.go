@@ -164,7 +164,13 @@ func (s *Schemas) ToStandAlone(scm *Schema) *Schema {
 		}
 	}
 
-	scm.Defs = s.types
+	scm.Defs = make(Types, len(s.types))
+	for k, v := range s.types {
+		if scm == v {
+			continue
+		}
+		scm.Defs[k] = v
+	}
 
 	return scm.ChangeDefs("#/$defs")
 }
