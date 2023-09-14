@@ -136,9 +136,7 @@ func TestCommonSchema(t *testing.T) {
 			`additionalProperties` /* len=20 */ : false,
 			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Node2`, /* len=50 */
 			"properties": map[string]interface{} /* len=2 */ {
-				"Any": map[string]interface{}{
-					"type": "object",
-				},
+				"Any": map[string]interface{}{},
 				"Map": map[string]interface{} /* len=2 */ {
 					`patternProperties` /* len=17 */ : map[string]interface{}{
 						"": map[string]interface{}{

@@ -144,7 +144,7 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo,main
 	//nolint: exhaustive
 	switch t.Kind() {
 	case reflect.Interface:
-		scm.Type = TypeObject
+		scm.Type = ""
 
 	case reflect.Bool:
 		scm.Type = TypeBool
