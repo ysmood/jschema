@@ -108,7 +108,7 @@ func (s Schemas) add(r Ref, scm *Schema) {
 }
 
 // DefineT converts the t to Schema recursively and append newly meet schemas to the schema list s.
-func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo,maintidx
+func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo
 	r := s.RefT(t)
 	if s.has(r) {
 		return &Schema{Ref: &r}
@@ -200,8 +200,6 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo,main
 				continue
 			}
 
-			n := f.Name
-
 			p := s.DefineT(f.Type)
 
 			ps := s.PeakSchema(p)
@@ -213,16 +211,7 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo,main
 				continue
 			}
 
-			p.Description = f.Tag.Get("description")
-			p.Format = f.Tag.Get("format")
-
-			if val, has := jsonValTag(f.Tag, "default", n); has {
-				p.Default = val
-			}
-
-			if val, has := jsonValTag(f.Tag, "example", n); has {
-				p.Example = val
-			}
+			n := f.Name
 
 			if tag != nil {
 				if tag.Name != "" {
@@ -233,22 +222,9 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop,gocyclo,main
 				}
 			}
 
-			if p.Type == TypeString {
-				p.Pattern = f.Tag.Get("pattern")
-			}
-
-			if p.Type == TypeNumber || p.Type == TypeInteger {
-				p.Minimum = toNum(f.Tag.Get("min"))
-				p.Maximum = toNum(f.Tag.Get("max"))
-			}
-
-			if p.Type == TypeArray {
-				if p.MinItems == nil {
-					p.MinItems = toInt(f.Tag.Get("min"))
-				}
-				if p.MaxItems == nil {
-					p.MaxItems = toInt(f.Tag.Get("max"))
-				}
+			err := p.loadTags(f.Tag)
+			if err != nil {
+				panic(fmt.Errorf("fail to load tag on field %s: %w", f.Name, err))
 			}
 
 			scm.Properties[n] = p
@@ -312,17 +288,16 @@ func (s Schemas) defineInstances(i *vary.Interface) *Schema {
 	return scm
 }
 
-func jsonValTag(t reflect.StructTag, tagName, fieldName string) (JVal, bool) { //nolint: ireturn
+func jsonValTag(t reflect.StructTag, tagName string) (d JVal, err error) { //nolint: ireturn,nonamedreturns
 	tag := t.Get(tagName)
 	if tag != "" {
-		var d JVal
-		err := json.Unmarshal([]byte(tag), &d)
+		err = json.Unmarshal([]byte(tag), &d)
 		if err != nil {
-			panic(fmt.Errorf("value of %s tag is invalid json string for %s: %w", tagName, fieldName, err))
+			err = fmt.Errorf("value of %s tag is invalid json string: %w", tagName, err)
 		}
-		return d, true
 	}
-	return nil, false
+
+	return
 }
 
 func toNum(v string) *float64 {
@@ -340,4 +315,41 @@ func toInt(v string) *int {
 	}
 	ii := int(i)
 	return &ii
+}
+
+func (s *Schema) loadTags(t reflect.StructTag) error {
+	s.Description = t.Get("description")
+	s.Format = t.Get("format")
+
+	val, err := jsonValTag(t, "default")
+	if err != nil {
+		return err
+	}
+	s.Default = val
+
+	val, err = jsonValTag(t, "example")
+	if err != nil {
+		return err
+	}
+	s.Example = val
+
+	if s.Type == TypeString {
+		s.Pattern = t.Get("pattern")
+	}
+
+	if s.Type == TypeNumber || s.Type == TypeInteger {
+		s.Minimum = toNum(t.Get("min"))
+		s.Maximum = toNum(t.Get("max"))
+	}
+
+	if s.Type == TypeArray {
+		if s.MinItems == nil {
+			s.MinItems = toInt(t.Get("min"))
+		}
+		if s.MaxItems == nil {
+			s.MaxItems = toInt(t.Get("max"))
+		}
+	}
+
+	return nil
 }
