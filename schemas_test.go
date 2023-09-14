@@ -364,11 +364,60 @@ func TestRef(t *testing.T) {
 
 	type A struct{}
 
-	type B struct{ A A }
+	type C[T any] struct{}
+
+	type B struct {
+		A  A
+		C  C[string]
+		C2 C[int]
+	}
 
 	c.Define(B{})
 
 	g.Eq(c.PeakSchema(A{}).Title, "A")
+
+	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=4 */ {
+		"A": map[string]interface{} /* len=4 */ {
+			`additionalProperties` /* len=20 */ : false,
+			"description":                        `github.com/NaturalSelectionLabs/jschema_test.A`, /* len=46 */
+			"title":                              "A",
+			"type":                               "object",
+		},
+		"B": map[string]interface{} /* len=6 */ {
+			`additionalProperties` /* len=20 */ : false,
+			"description":                        `github.com/NaturalSelectionLabs/jschema_test.B`, /* len=46 */
+			"properties": map[string]interface{} /* len=3 */ {
+				"A": map[string]interface{}{
+					"$ref": "#/$defs/A",
+				},
+				"C": map[string]interface{}{
+					"$ref": "#/$defs/C",
+				},
+				"C2": map[string]interface{}{
+					"$ref": "#/$defs/C1",
+				},
+			},
+			"required": []interface{} /* len=3 cap=4 */ {
+				"A",
+				"C",
+				"C2",
+			},
+			"title": "B",
+			"type":  "object",
+		},
+		"C": map[string]interface{} /* len=4 */ {
+			`additionalProperties` /* len=20 */ : false,
+			"description":                        `github.com/NaturalSelectionLabs/jschema_test.C[string]`, /* len=54 */
+			"title":                              "C[string]",
+			"type":                               "object",
+		},
+		"C1": map[string]interface{} /* len=4 */ {
+			`additionalProperties` /* len=20 */ : false,
+			"description":                        `github.com/NaturalSelectionLabs/jschema_test.C[int]`, /* len=51 */
+			"title":                              "C[int]",
+			"type":                               "object",
+		},
+	})
 }
 
 func TestEmbeddedStruct(t *testing.T) {
