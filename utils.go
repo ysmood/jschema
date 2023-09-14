@@ -60,6 +60,84 @@ func (s *Schema) Clone() *Schema {
 	return n
 }
 
+func (s *Schema) ChangeDefs(to string) *Schema { //nolint: cyclop
+	if s == nil {
+		return s
+	}
+
+	n := *s
+
+	if n.Ref != nil {
+		n.Ref = &Ref{}
+		*n.Ref = *s.Ref
+		n.Ref.Defs = to
+	}
+
+	if n.AnyOf != nil {
+		n.AnyOf = make([]*Schema, len(s.AnyOf))
+		for i, ss := range s.AnyOf {
+			n.AnyOf[i] = ss.ChangeDefs(to)
+		}
+	}
+
+	if n.Enum != nil {
+		n.Enum = make([]JVal, len(s.Enum))
+		copy(n.Enum, s.Enum)
+	}
+
+	if n.Properties != nil {
+		n.Properties = make(Properties, len(s.Properties))
+		for k, p := range s.Properties {
+			n.Properties[k] = p.ChangeDefs(to)
+		}
+	}
+
+	if n.PatternProperties != nil {
+		n.PatternProperties = make(Properties, len(s.Properties))
+		for k, p := range s.PatternProperties {
+			n.PatternProperties[k] = p.ChangeDefs(to)
+		}
+	}
+
+	if n.Maximum != nil {
+		n.Maximum = new(float64)
+		*n.Maximum = *s.Maximum
+	}
+	if n.Minimum != nil {
+		n.Minimum = new(float64)
+		*n.Minimum = *s.Minimum
+	}
+
+	n.Items = s.Items.ChangeDefs(to)
+	if n.Maximum != nil {
+		n.MaxItems = new(int)
+		*n.MaxItems = *s.MaxItems
+	}
+	if n.Minimum != nil {
+		n.MinItems = new(int)
+		*n.MinItems = *s.MinItems
+	}
+
+	if n.Required != nil {
+		n.Required = make(Required, len(s.Required))
+		copy(n.Required, s.Required)
+	}
+
+	if n.AdditionalProperties != nil {
+		n.AdditionalProperties = new(bool)
+		*n.AdditionalProperties = *s.AdditionalProperties
+	}
+
+	if n.Defs != nil {
+		n.Defs = make(Types)
+		for k, p := range s.Defs {
+			n.Defs[k] = p.ChangeDefs(to)
+		}
+	}
+
+	return &n
+}
+
 func (s *Schemas) AnyOf(list ...interface{}) *Schema {
 	ss := []*Schema{}
 
@@ -88,7 +166,7 @@ func (s *Schemas) ToStandAlone(scm *Schema) *Schema {
 
 	scm.Defs = s.types
 
-	return scm
+	return scm.ChangeDefs("#/$defs")
 }
 
 // SchemaT returns a standalone schema for the given type.
