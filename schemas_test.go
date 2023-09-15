@@ -626,3 +626,22 @@ func TestSchemaT(t *testing.T) {
 		})
 	}
 }
+
+func TestDefaultTag(t *testing.T) {
+	type X struct {
+		A int    `default:"1"`
+		B *int   `default:"1"`
+		C uint   `default:"1"`
+		D *uint  `default:"1"`
+		E []uint `default:"[1,2,3]"`
+	}
+
+	s := jschema.New("")
+
+	s.Define(X{})
+
+	x := reflect.ValueOf(&X{}).Elem()
+	for k, p := range s.JSON()["X"].Properties {
+		x.FieldByName(k).Set(reflect.ValueOf(p.Default))
+	}
+}

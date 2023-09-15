@@ -11,9 +11,7 @@ import (
 
 func ExampleNew() {
 	type Node struct {
-		// The default tag only accepts json string.
-		// So if you want to set a string value "jack",
-		// you should use "\"jack\"" instead of "jack" for the field tag
+		// Use tags like default, example to set the json schema validation rules.
 		ID int `json:"id" default:"1" example:"2" min:"0" max:"100"`
 
 		// Use the description tag to set the description of the field
@@ -186,12 +184,12 @@ func Example_custom_handler() {
 		return &jschema.Schema{
 			Description: "time.Time",
 			Title:       "Time",
-			Type:        jschema.TypeNumber,
+			Type:        jschema.TypeString,
 		}
 	})
 
 	type Data struct {
-		Time time.Time `json:"time"`
+		Time time.Time `json:"time" default:"2023-09-15T04:45:04.724Z"`
 	}
 
 	s.Define(Data{})
@@ -207,7 +205,8 @@ func Example_custom_handler() {
 	//     "properties": {
 	//       "time": {
 	//         "title": "Time",
-	//         "type": "number"
+	//         "default": "2023-09-15T04:45:04.724Z",
+	//         "type": "string"
 	//       }
 	//     },
 	//     "required": [
@@ -217,7 +216,8 @@ func Example_custom_handler() {
 	//   },
 	//   "Time": {
 	//     "title": "Time",
-	//     "type": "number"
+	//     "default": "2023-09-15T04:45:04.724Z",
+	//     "type": "string"
 	//   }
 	// }
 }

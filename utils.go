@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/gob"
 	"reflect"
+
+	"github.com/huandu/go-clone"
 )
 
 // Description set the description for current type.
@@ -60,82 +62,32 @@ func (s *Schema) Clone() *Schema {
 	return n
 }
 
-func (s *Schema) ChangeDefs(to string) *Schema { //nolint: cyclop
+func (s *Schema) ChangeDefs(to string) {
 	if s == nil {
-		return s
+		return
 	}
 
-	n := *s
-
-	if n.Ref != nil {
-		n.Ref = &Ref{}
-		*n.Ref = *s.Ref
-		n.Ref.Defs = to
+	if s.Ref != nil {
+		s.Ref.Defs = to
 	}
 
-	if n.AnyOf != nil {
-		n.AnyOf = make([]*Schema, len(s.AnyOf))
-		for i, ss := range s.AnyOf {
-			n.AnyOf[i] = ss.ChangeDefs(to)
-		}
+	for _, ss := range s.AnyOf {
+		ss.ChangeDefs(to)
 	}
 
-	if n.Enum != nil {
-		n.Enum = make([]JVal, len(s.Enum))
-		copy(n.Enum, s.Enum)
+	for _, p := range s.Properties {
+		p.ChangeDefs(to)
 	}
 
-	if n.Properties != nil {
-		n.Properties = make(Properties, len(s.Properties))
-		for k, p := range s.Properties {
-			n.Properties[k] = p.ChangeDefs(to)
-		}
+	for _, p := range s.PatternProperties {
+		p.ChangeDefs(to)
 	}
 
-	if n.PatternProperties != nil {
-		n.PatternProperties = make(Properties, len(s.Properties))
-		for k, p := range s.PatternProperties {
-			n.PatternProperties[k] = p.ChangeDefs(to)
-		}
-	}
+	s.Items.ChangeDefs(to)
 
-	if n.Maximum != nil {
-		n.Maximum = new(float64)
-		*n.Maximum = *s.Maximum
+	for _, p := range s.Defs {
+		p.ChangeDefs(to)
 	}
-	if n.Minimum != nil {
-		n.Minimum = new(float64)
-		*n.Minimum = *s.Minimum
-	}
-
-	n.Items = s.Items.ChangeDefs(to)
-	if n.Maximum != nil {
-		n.MaxItems = new(int)
-		*n.MaxItems = *s.MaxItems
-	}
-	if n.Minimum != nil {
-		n.MinItems = new(int)
-		*n.MinItems = *s.MinItems
-	}
-
-	if n.Required != nil {
-		n.Required = make(Required, len(s.Required))
-		copy(n.Required, s.Required)
-	}
-
-	if n.AdditionalProperties != nil {
-		n.AdditionalProperties = new(bool)
-		*n.AdditionalProperties = *s.AdditionalProperties
-	}
-
-	if n.Defs != nil {
-		n.Defs = make(Types)
-		for k, p := range s.Defs {
-			n.Defs[k] = p.ChangeDefs(to)
-		}
-	}
-
-	return &n
 }
 
 func (s *Schemas) AnyOf(list ...interface{}) *Schema {
@@ -157,22 +109,14 @@ func (s *Schemas) Const(v JVal) *Schema {
 }
 
 func (s *Schemas) ToStandAlone(scm *Schema) *Schema {
-	if scm.Ref != nil {
-		return &Schema{
-			Ref:  scm.Ref,
-			Defs: s.types,
-		}
-	}
+	scm = clone.Clone(scm).(*Schema)      //nolint: forcetypeassert
+	types := clone.Clone(s.types).(Types) //nolint: forcetypeassert
 
-	scm.Defs = make(Types, len(s.types))
-	for k, v := range s.types {
-		if scm == v {
-			continue
-		}
-		scm.Defs[k] = v
-	}
+	scm.Defs = types
 
-	return scm.ChangeDefs("#/$defs")
+	scm.ChangeDefs("#/$defs")
+
+	return scm
 }
 
 // SchemaT returns a standalone schema for the given type.

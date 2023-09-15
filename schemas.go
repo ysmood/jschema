@@ -243,7 +243,7 @@ func (s Schemas) DefineFieldT(f reflect.StructField) *Schema { //nolint: cyclop
 
 	p := s.DefineT(f.Type)
 
-	err := p.loadTags(f.Tag)
+	err := p.loadTags(f)
 	if err != nil {
 		panic(fmt.Errorf("fail to load tag on field %s: %w", f.Name, err))
 	}
@@ -297,16 +297,27 @@ func (s Schemas) defineInstances(i *vary.Interface) *Schema {
 	return scm
 }
 
-func jsonValTag(t reflect.StructTag, tagName string) (d JVal, err error) { //nolint: ireturn,nonamedreturns
-	tag := t.Get(tagName)
-	if tag != "" {
-		err = json.Unmarshal([]byte(tag), &d)
-		if err != nil {
-			err = fmt.Errorf("value of %s tag is invalid json string: %w", tagName, err)
-		}
+func jsonValTag(f reflect.StructField, tagName string) (JVal, error) { //nolint: ireturn
+	tag := f.Tag.Get(tagName)
+	if tag == "" {
+		return nil, nil //nolint: nilnil
 	}
 
-	return
+	d := reflect.New(f.Type).Interface()
+
+	err := json.Unmarshal([]byte(tag), d)
+	if err == nil {
+		return reflect.ValueOf(d).Elem().Interface(), nil
+	}
+
+	// Try to quote the string and parse it again
+	b, _ := json.Marshal(tag) //nolint: errchkjson
+	e := json.Unmarshal(b, &d)
+	if e == nil {
+		return reflect.ValueOf(d).Elem().Interface(), nil
+	}
+
+	return nil, fmt.Errorf("value of %s tag is invalid json string: %w", tagName, err)
 }
 
 func toNum(v string) *float64 {
@@ -326,17 +337,18 @@ func toInt(v string) *int {
 	return &ii
 }
 
-func (s *Schema) loadTags(t reflect.StructTag) error {
+func (s *Schema) loadTags(f reflect.StructField) error {
+	t := f.Tag
 	s.Description = t.Get("description")
 	s.Format = t.Get("format")
 
-	val, err := jsonValTag(t, "default")
+	val, err := jsonValTag(f, "default")
 	if err != nil {
 		return err
 	}
 	s.Default = val
 
-	val, err = jsonValTag(t, "example")
+	val, err = jsonValTag(f, "example")
 	if err != nil {
 		return err
 	}
