@@ -50,7 +50,7 @@ func TestCommonSchema(t *testing.T) {
 	}
 
 	type Node1 struct {
-		Str     string `format:"email" pattern:"."`
+		Str     string `format:"email" pattern:"." min:"1" max:"10"`
 		Num     int    `json:"num,omitempty"`
 		Bool    bool   `json:"bool"`
 		Ignore  string `json:"-"`
@@ -109,10 +109,12 @@ func TestCommonSchema(t *testing.T) {
 					},
 					"type": "array",
 				},
-				"Str": map[string]interface{} /* len=3 */ {
-					"format":  "email",
-					"pattern": ".",
-					"type":    "string",
+				"Str": map[string]interface{} /* len=5 */ {
+					"format":    "email",
+					"maxLength": 10.0,
+					"minLength": 1.0,
+					"pattern":   ".",
+					"type":      "string",
 				},
 				"bool": map[string]interface{}{
 					"type": "boolean",

@@ -62,11 +62,13 @@ type Schema struct {
 	Format            string     `json:"format,omitempty"`
 
 	// Number validation
-	Maximum *float64 `json:"maximum,omitempty"`
-	Minimum *float64 `json:"minimum,omitempty"`
+	Max *float64 `json:"maximum,omitempty"`
+	Min *float64 `json:"minimum,omitempty"`
 
 	// String validation
-	Pattern string `json:"pattern,omitempty"`
+	MaxLen  *float64 `json:"maxLength,omitempty"`
+	MinLen  *float64 `json:"minLength,omitempty"`
+	Pattern string   `json:"pattern,omitempty"`
 
 	// Array validation
 	Items    *Schema `json:"items,omitempty"`
@@ -356,11 +358,13 @@ func (s *Schema) loadTags(f reflect.StructField) error {
 
 	if s.Type == TypeString {
 		s.Pattern = t.Get("pattern")
+		s.MinLen = toNum(t.Get("min"))
+		s.MaxLen = toNum(t.Get("max"))
 	}
 
 	if s.Type == TypeNumber || s.Type == TypeInteger {
-		s.Minimum = toNum(t.Get("min"))
-		s.Maximum = toNum(t.Get("max"))
+		s.Min = toNum(t.Get("min"))
+		s.Max = toNum(t.Get("max"))
 	}
 
 	if s.Type == TypeArray {
