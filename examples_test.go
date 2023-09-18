@@ -6,7 +6,7 @@ import (
 
 	"github.com/NaturalSelectionLabs/jschema"
 	"github.com/NaturalSelectionLabs/jschema/lib/test"
-	"github.com/ysmood/vary"
+	"github.com/naturalselectionlabs/vary"
 )
 
 func ExampleNew() {

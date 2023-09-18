@@ -12,9 +12,9 @@ import (
 
 	"github.com/NaturalSelectionLabs/jschema"
 	"github.com/NaturalSelectionLabs/jschema/lib/test"
+	"github.com/naturalselectionlabs/vary"
 	"github.com/xeipuuv/gojsonschema"
 	"github.com/ysmood/got"
-	"github.com/ysmood/vary"
 )
 
 func TestTypeName(t *testing.T) {

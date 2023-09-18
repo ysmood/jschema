@@ -4,9 +4,9 @@ go 1.20
 
 require (
 	github.com/huandu/go-clone v1.6.0
+	github.com/naturalselectionlabs/vary v0.4.0
 	github.com/xeipuuv/gojsonschema v1.2.0
-	github.com/ysmood/got v0.35.0
-	github.com/ysmood/vary v0.3.2
+	github.com/ysmood/got v0.35.1
 )
 
 require (
