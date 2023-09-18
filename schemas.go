@@ -133,6 +133,21 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 		return scm
 	}
 
+	if t.Kind() == reflect.Ptr {
+		*scm = *s.DefineT(t.Elem())
+
+		if scm.Ref == nil {
+			n := *scm
+			scm.Type = ""
+			scm.AnyOf = []*Schema{&n, {Type: TypeNull}}
+		} else {
+			scm.AnyOf = []*Schema{{Ref: scm.Ref}, {Type: TypeNull}}
+			scm.Ref = nil
+		}
+
+		goto end
+	}
+
 	if implements(t, tEnumString) {
 		scm.Enum = ToJValList(reflect.New(t).Interface().(EnumString).Values()...) //nolint: forcetypeassert
 		return &Schema{Ref: &r}
@@ -196,22 +211,11 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 			scm.mergeProps(s.DefineFieldT(t.Field(i)))
 		}
 
-	case reflect.Ptr:
-		*scm = *s.DefineT(t.Elem())
-
-		if scm.Ref == nil {
-			n := *scm
-			scm.Type = ""
-			scm.AnyOf = []*Schema{&n, {Type: TypeNull}}
-		} else {
-			scm.AnyOf = []*Schema{{Ref: scm.Ref}, {Type: TypeNull}}
-			scm.Ref = nil
-		}
-
 	default:
 		scm.Type = TypeUnknown
 	}
 
+end:
 	if r.Unique() {
 		scm = &Schema{
 			Ref: &r,

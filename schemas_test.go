@@ -58,6 +58,7 @@ func TestCommonSchema(t *testing.T) {
 		Arr     [2]float64
 		Obj     *Node2
 		Enum    test.Enum
+		EnumPtr *test.Enum
 		private int //nolint: unused
 	}
 
@@ -81,7 +82,7 @@ func TestCommonSchema(t *testing.T) {
 		"Node1": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
 			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Node1`, /* len=50 */
-			"properties": map[string]interface{} /* len=7 */ {
+			"properties": map[string]interface{} /* len=8 */ {
 				"Arr": map[string]interface{} /* len=4 */ {
 					"items": map[string]interface{}{
 						"type": "number",
@@ -92,6 +93,16 @@ func TestCommonSchema(t *testing.T) {
 				},
 				"Enum": map[string]interface{}{
 					"$ref": "#/$defs/Enum",
+				},
+				"EnumPtr": map[string]interface{}{
+					"anyOf": []interface{} /* len=2 cap=2 */ {
+						map[string]interface{}{
+							"$ref": "#/$defs/Enum",
+						},
+						map[string]interface{}{
+							"type": "null",
+						},
+					},
 				},
 				"Obj": map[string]interface{}{
 					"anyOf": []interface{} /* len=2 cap=2 */ {
@@ -123,13 +134,14 @@ func TestCommonSchema(t *testing.T) {
 					"type": "integer",
 				},
 			},
-			"required": []interface{} /* len=6 cap=8 */ {
+			"required": []interface{} /* len=7 cap=8 */ {
 				"Str",
 				"bool",
 				"Slice",
 				"Arr",
 				"Obj",
 				"Enum",
+				"EnumPtr",
 			},
 			"title": "Node1",
 			"type":  "object",
