@@ -3,7 +3,9 @@ package jschema
 import (
 	"bytes"
 	"encoding/gob"
+	"encoding/json"
 	"reflect"
+	"sort"
 
 	"github.com/huandu/go-clone"
 )
@@ -163,4 +165,15 @@ func (r *Required) Has(name string) bool {
 		}
 	}
 	return false
+}
+
+func toString(v any) string {
+	b, _ := json.Marshal(v) //nolint: errchkjson
+	return string(b)
+}
+
+func SortJVal(list []JVal) {
+	sort.Slice(list, func(i, j int) bool {
+		return toString(list[i]) < toString(list[j])
+	})
 }

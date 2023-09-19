@@ -127,8 +127,8 @@ func ExampleSchemas() {
 	//     "description": "github.com/NaturalSelectionLabs/jschema/lib/test.Enum",
 	//     "enum": [
 	//       "one",
-	//       "two",
-	//       "three"
+	//       "three",
+	//       "two"
 	//     ]
 	//   },
 	//   "Metadata": {

@@ -74,8 +74,8 @@ func TestCommonSchema(t *testing.T) {
 			"description": `github.com/NaturalSelectionLabs/jschema/lib/test.Enum`, /* len=53 */
 			"enum": []interface{} /* len=3 cap=4 */ {
 				"one",
-				"two",
 				"three",
+				"two",
 			},
 			"title": "Enum",
 		},

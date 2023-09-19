@@ -150,11 +150,13 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 
 	if implements(t, tEnumString) {
 		scm.Enum = ToJValList(reflect.New(t).Interface().(EnumString).Values()...) //nolint: forcetypeassert
+		SortJVal(scm.Enum)
 		return &Schema{Ref: &r}
 	}
 
 	if implements(t, tEnum) {
 		scm.Enum = ToJValList(reflect.New(t).Interface().(Enum).Values()...) //nolint: forcetypeassert
+		SortJVal(scm.Enum)
 		return &Schema{Ref: &r}
 	}
 
