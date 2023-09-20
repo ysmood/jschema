@@ -14,7 +14,8 @@ func ExampleNew() {
 		// Use tags like default, example to set the json schema validation rules.
 		ID int `json:"id" default:"1" example:"2" min:"0" max:"100"`
 
-		// Use the description tag to set the description of the field
+		// Use the tags to set description, min, max, etc. All available tags are [jschema.JTag].
+		// Use [jschema.JTagItemPrefix] to prefix [jschema.JTag] to set the array item.
 		Children []*Node `json:"children" description:"The children of the node" min:"0" max:"10"`
 	}
 

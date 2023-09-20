@@ -2,6 +2,24 @@ package jschema
 
 import "strings"
 
+type JTag string
+
+const (
+	JTagDescription JTag = "description"
+	JTagFormat      JTag = "format"
+	JTagDefault     JTag = "default"
+	JTagExample     JTag = "example"
+	JTagPattern     JTag = "pattern"
+	JTagMin         JTag = "min"
+	JTagMax         JTag = "max"
+)
+
+const JTagItemPrefix = "item-"
+
+func (t JTag) String() string {
+	return string(t)
+}
+
 // tagOptions is the string following a comma in a struct field's "json"
 // tag, or the empty string. It does not include the leading comma.
 type tagOptions string

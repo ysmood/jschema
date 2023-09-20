@@ -55,7 +55,7 @@ func TestCommonSchema(t *testing.T) {
 		Bool    bool   `json:"bool"`
 		Ignore  string `json:"-"`
 		Slice   []Node1
-		Arr     [2]float64
+		Arr     [2]float64 `item-min:"0"`
 		Obj     *Node2
 		Enum    test.Enum
 		EnumPtr *test.Enum
@@ -84,8 +84,9 @@ func TestCommonSchema(t *testing.T) {
 			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Node1`, /* len=50 */
 			"properties": map[string]interface{} /* len=8 */ {
 				"Arr": map[string]interface{} /* len=4 */ {
-					"items": map[string]interface{}{
-						"type": "number",
+					"items": map[string]interface{} /* len=2 */ {
+						"minimum": 0.0,
+						"type":    "number",
 					},
 					"maxItems": 2.0,
 					"minItems": 2.0,

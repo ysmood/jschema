@@ -251,9 +251,16 @@ func (s Schemas) DefineFieldT(f reflect.StructField) *Schema { //nolint: cyclop
 
 	p := s.DefineT(f.Type)
 
-	err := p.loadTags(f)
+	err := p.loadTags(false, f)
 	if err != nil {
 		panic(fmt.Errorf("fail to load tag on field %s: %w", f.Name, err))
+	}
+
+	if p.Items != nil {
+		err = p.Items.loadTags(true, f)
+		if err != nil {
+			panic(fmt.Errorf("fail to load item tag on field %s: %w", f.Name, err))
+		}
 	}
 
 	n := f.Name
@@ -345,40 +352,45 @@ func toInt(v string) *int {
 	return &ii
 }
 
-func (s *Schema) loadTags(f reflect.StructField) error {
-	t := f.Tag
-	s.Description = t.Get("description")
-	s.Format = t.Get("format")
+func (s *Schema) loadTags(item bool, f reflect.StructField) error {
+	prefix := ""
+	if item {
+		prefix = JTagItemPrefix
+	}
 
-	val, err := jsonValTag(f, "default")
+	t := f.Tag
+	s.Description = t.Get(prefix + JTagDescription.String())
+	s.Format = t.Get(prefix + JTagFormat.String())
+
+	val, err := jsonValTag(f, prefix+JTagDefault.String())
 	if err != nil {
 		return err
 	}
 	s.Default = val
 
-	val, err = jsonValTag(f, "example")
+	val, err = jsonValTag(f, prefix+JTagExample.String())
 	if err != nil {
 		return err
 	}
 	s.Example = val
 
 	if s.Type == TypeString {
-		s.Pattern = t.Get("pattern")
-		s.MinLen = toNum(t.Get("min"))
-		s.MaxLen = toNum(t.Get("max"))
+		s.Pattern = t.Get(prefix + JTagPattern.String())
+		s.MinLen = toNum(t.Get(prefix + JTagMin.String()))
+		s.MaxLen = toNum(t.Get(prefix + JTagMax.String()))
 	}
 
 	if s.Type == TypeNumber || s.Type == TypeInteger {
-		s.Min = toNum(t.Get("min"))
-		s.Max = toNum(t.Get("max"))
+		s.Min = toNum(t.Get(prefix + JTagMin.String()))
+		s.Max = toNum(t.Get(prefix + JTagMax.String()))
 	}
 
 	if s.Type == TypeArray {
 		if s.MinItems == nil {
-			s.MinItems = toInt(t.Get("min"))
+			s.MinItems = toInt(t.Get(prefix + JTagMin.String()))
 		}
 		if s.MaxItems == nil {
-			s.MaxItems = toInt(t.Get("max"))
+			s.MaxItems = toInt(t.Get(prefix + JTagMax.String()))
 		}
 	}
 
