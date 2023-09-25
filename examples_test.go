@@ -190,7 +190,7 @@ func Example_custom_handler() {
 	})
 
 	type Data struct {
-		Time time.Time `json:"time" default:"2023-09-15T04:45:04.724Z"`
+		Time time.Time `json:"time"`
 	}
 
 	s.Define(Data{})
@@ -205,9 +205,7 @@ func Example_custom_handler() {
 	//     "type": "object",
 	//     "properties": {
 	//       "time": {
-	//         "title": "Time",
-	//         "default": "2023-09-15T04:45:04.724Z",
-	//         "type": "string"
+	//         "$ref": "#/$defs/Time"
 	//       }
 	//     },
 	//     "required": [
@@ -217,7 +215,7 @@ func Example_custom_handler() {
 	//   },
 	//   "Time": {
 	//     "title": "Time",
-	//     "default": "2023-09-15T04:45:04.724Z",
+	//     "description": "time.Time",
 	//     "type": "string"
 	//   }
 	// }

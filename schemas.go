@@ -128,11 +128,6 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 		scm.Description = fmt.Sprintf("%s.%s", r.Package, r.Name)
 	}
 
-	if h := s.getHandler(r); h != nil {
-		*scm = *h()
-		return scm
-	}
-
 	if t.Kind() == reflect.Ptr {
 		*scm = *s.DefineT(t.Elem())
 
@@ -151,17 +146,18 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 	if implements(t, tEnumString) {
 		scm.Enum = ToJValList(reflect.New(t).Interface().(EnumString).Values()...) //nolint: forcetypeassert
 		SortJVal(scm.Enum)
-		return &Schema{Ref: &r}
+		goto end
 	}
 
 	if implements(t, tEnum) {
 		scm.Enum = ToJValList(reflect.New(t).Interface().(Enum).Values()...) //nolint: forcetypeassert
 		SortJVal(scm.Enum)
-		return &Schema{Ref: &r}
+		goto end
 	}
 
-	if iter := s.interfaces[vary.ID(t)]; iter != nil {
-		return s.defineInstances(iter)
+	if i := s.interfaces[vary.ID(t)]; i != nil {
+		s.defineInstances(scm, i)
+		goto end
 	}
 
 	//nolint: exhaustive
@@ -218,6 +214,11 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 	}
 
 end:
+
+	if h := s.getHandler(r); h != nil {
+		*scm = *h()
+	}
+
 	if r.Unique() {
 		scm = &Schema{
 			Ref: &r,
@@ -283,8 +284,7 @@ func (s Schemas) DefineFieldT(f reflect.StructField) *Schema { //nolint: cyclop
 	return scm
 }
 
-func (s Schemas) defineInstances(i *vary.Interface) *Schema {
-	scm := s.DefineT(i.Self)
+func (s Schemas) defineInstances(scm *Schema, i *vary.Interface) {
 	is := s.PeakSchema(scm)
 	is.Type = ""
 
@@ -308,8 +308,6 @@ func (s Schemas) defineInstances(i *vary.Interface) *Schema {
 		ps := s.DefineT(p.typ)
 		is.AnyOf = append(is.AnyOf, ps)
 	}
-
-	return scm
 }
 
 func jsonValTag(f reflect.StructField, tagName string) (JVal, error) { //nolint: ireturn
@@ -352,7 +350,11 @@ func toInt(v string) *int {
 	return &ii
 }
 
-func (s *Schema) loadTags(item bool, f reflect.StructField) error {
+func (s *Schema) loadTags(item bool, f reflect.StructField) error { //nolint: cyclop
+	if s.Ref != nil {
+		return nil
+	}
+
 	prefix := ""
 	if item {
 		prefix = JTagItemPrefix

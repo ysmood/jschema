@@ -185,25 +185,29 @@ func TestHandler(t *testing.T) {
 
 	c.AddHandler(A{}, func() *jschema.Schema {
 		return &jschema.Schema{
-			Type: "number",
+			Description: "type A",
+			Title:       "AA",
+			Type:        "number",
 		}
 	})
 
 	c.Define(B{})
 
-	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=2 */ {
+	g.Eq(g.JSON(c.String()), map[string]interface{}{
 		"A": map[string]interface{}{
-			"type": "number",
+			"title":       "AA",
+			"description": "type A",
+			"type":        "number",
 		},
-		"B": map[string]interface{} /* len=6 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.B`, /* len=57 */
+		"B": map[string]interface{}{
+			"additionalProperties": false,
+			"description":          "github.com/NaturalSelectionLabs/jschema_test.B",
 			"properties": map[string]interface{}{
 				"A": map[string]interface{}{
-					"type": "number",
+					"$ref": "#/$defs/A",
 				},
 			},
-			"required": []interface{} /* len=1 cap=1 */ {
+			"required": []interface{}{
 				"A",
 			},
 			"title": "B",
@@ -349,23 +353,24 @@ func TestRawMessage(t *testing.T) {
 
 	c.Define(A{})
 
-	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=2 */ {
-		"A": map[string]interface{} /* len=6 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.A`, /* len=57 */
+	g.Eq(g.JSON(c.String()), map[string]interface{}{
+		"A": map[string]interface{}{
+			"additionalProperties": false,
+			"description":          "github.com/NaturalSelectionLabs/jschema_test.A",
 			"properties": map[string]interface{}{
-				"A": map[string]interface{} /* len=2 */ {
-					"title": "RawMessage",
+				"A": map[string]interface{}{
+					"$ref": "#/$defs/RawMessage",
 				},
 			},
-			"required": []interface{} /* len=1 cap=1 */ {
+			"required": []interface{}{
 				"A",
 			},
 			"title": "A",
 			"type":  "object",
 		},
-		"RawMessage": map[string]interface{} /* len=2 */ {
-			"title": "RawMessage",
+		"RawMessage": map[string]interface{}{
+			"description": "encoding/json.RawMessage",
+			"title":       "RawMessage",
 		},
 	})
 }
@@ -565,9 +570,11 @@ func TestAnyOf(t *testing.T) {
 		},
 	})
 
+	js := s.JSON()
+
 	schema := gojsonschema.NewGoLoader(map[string]interface{}{
 		"$ref":  "#/$defs/Shape",
-		"$defs": s.JSON(),
+		"$defs": js,
 	})
 
 	{
