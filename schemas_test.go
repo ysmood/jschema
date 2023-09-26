@@ -183,8 +183,8 @@ func TestHandler(t *testing.T) {
 		A A
 	}
 
-	c.AddHandler(A{}, func() *jschema.Schema {
-		return &jschema.Schema{
+	c.Hijack(A{}, func(scm *jschema.Schema) {
+		*scm = jschema.Schema{
 			Description: "type A",
 			Title:       "AA",
 			Type:        "number",
@@ -277,7 +277,7 @@ func TestTime(t *testing.T) {
 	g := got.T(t)
 
 	c := jschema.New("")
-	c.AddTimeHandler()
+	c.HijackTime()
 	c.Define(time.Now())
 
 	g.Eq(g.JSON(c.String()), map[string]interface{}{
@@ -293,7 +293,7 @@ func TestBigInt(t *testing.T) {
 	g := got.T(t)
 
 	c := jschema.New("")
-	c.AddBigIntHandler()
+	c.HijackBigInt()
 	c.Define(big.Int{})
 
 	g.Eq(g.JSON(c.String()), map[string]interface{}{
@@ -345,7 +345,7 @@ func TestRawMessage(t *testing.T) {
 	g := got.T(t)
 
 	c := jschema.New("")
-	c.AddJSONRawMessageHandler()
+	c.HijackJSONRawMessage()
 
 	type A struct {
 		A json.RawMessage

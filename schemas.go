@@ -14,7 +14,7 @@ import (
 type Schemas struct {
 	refPrefix  string
 	types      Types
-	handlers   map[Ref]Handler
+	handlers   map[Ref]Hijack
 	names      map[string]map[string]int
 	interfaces vary.Interfaces
 }
@@ -32,7 +32,7 @@ func New(refPrefix string) Schemas {
 	return Schemas{
 		refPrefix:  refPrefix,
 		types:      Types{},
-		handlers:   map[Ref]Handler{},
+		handlers:   map[Ref]Hijack{},
 		names:      map[string]map[string]int{},
 		interfaces: vary.Default,
 	}
@@ -50,7 +50,7 @@ type Schema struct {
 	Title       string `json:"title,omitempty"`
 	Description string `json:"description,omitempty"`
 	Default     JVal   `json:"default,omitempty"`
-	Example     JVal   `json:"example,omitempty"`
+	Examples    []JVal `json:"examples,omitempty"`
 
 	// Any type validation
 	AnyOf             []*Schema  `json:"anyOf,omitempty"`
@@ -215,8 +215,8 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 
 end:
 
-	if h := s.getHandler(r); h != nil {
-		*scm = *h()
+	if h := s.getHijack(r); h != nil {
+		h(scm)
 	}
 
 	if r.Unique() {
@@ -252,16 +252,10 @@ func (s Schemas) DefineFieldT(f reflect.StructField) *Schema { //nolint: cyclop
 
 	p := s.DefineT(f.Type)
 
-	err := p.loadTags(false, f)
-	if err != nil {
-		panic(fmt.Errorf("fail to load tag on field %s: %w", f.Name, err))
-	}
+	p.loadTags(false, f)
 
 	if p.Items != nil {
-		err = p.Items.loadTags(true, f)
-		if err != nil {
-			panic(fmt.Errorf("fail to load item tag on field %s: %w", f.Name, err))
-		}
+		p.Items.loadTags(true, f)
 	}
 
 	n := f.Name
@@ -310,27 +304,43 @@ func (s Schemas) defineInstances(scm *Schema, i *vary.Interface) {
 	}
 }
 
-func jsonValTag(f reflect.StructField, tagName string) (JVal, error) { //nolint: ireturn
+func jsonValTag(f reflect.StructField, tagName string) JVal { //nolint: ireturn
 	tag := f.Tag.Get(tagName)
 	if tag == "" {
-		return nil, nil //nolint: nilnil
+		return nil
 	}
 
 	d := reflect.New(f.Type).Interface()
 
 	err := json.Unmarshal([]byte(tag), d)
 	if err == nil {
-		return reflect.ValueOf(d).Elem().Interface(), nil
+		return reflect.ValueOf(d).Elem().Interface()
 	}
 
 	// Try to quote the string and parse it again
 	b, _ := json.Marshal(tag) //nolint: errchkjson
 	e := json.Unmarshal(b, &d)
 	if e == nil {
-		return reflect.ValueOf(d).Elem().Interface(), nil
+		return reflect.ValueOf(d).Elem().Interface()
 	}
 
-	return nil, fmt.Errorf("value of %s tag is invalid json string: %w", tagName, err)
+	return nil
+}
+
+func jsonValuesTag(f reflect.StructField, tagName string) []JVal {
+	tag := f.Tag.Get(tagName)
+	if tag == "" {
+		return nil
+	}
+
+	d := reflect.New(reflect.SliceOf(f.Type))
+
+	err := json.Unmarshal([]byte(tag), d.Interface())
+	if err != nil {
+		return nil
+	}
+
+	return ToJValList(d.Elem().Interface())
 }
 
 func toNum(v string) *float64 {
@@ -350,9 +360,9 @@ func toInt(v string) *int {
 	return &ii
 }
 
-func (s *Schema) loadTags(item bool, f reflect.StructField) error { //nolint: cyclop
+func (s *Schema) loadTags(item bool, f reflect.StructField) {
 	if s.Ref != nil {
-		return nil
+		return
 	}
 
 	prefix := ""
@@ -364,17 +374,9 @@ func (s *Schema) loadTags(item bool, f reflect.StructField) error { //nolint: cy
 	s.Description = t.Get(prefix + JTagDescription.String())
 	s.Format = t.Get(prefix + JTagFormat.String())
 
-	val, err := jsonValTag(f, prefix+JTagDefault.String())
-	if err != nil {
-		return err
-	}
-	s.Default = val
+	s.Default = jsonValTag(f, prefix+JTagDefault.String())
 
-	val, err = jsonValTag(f, prefix+JTagExample.String())
-	if err != nil {
-		return err
-	}
-	s.Example = val
+	s.Examples = jsonValuesTag(f, prefix+JTagExamples.String())
 
 	if s.Type == TypeString {
 		s.Pattern = t.Get(prefix + JTagPattern.String())
@@ -395,8 +397,6 @@ func (s *Schema) loadTags(item bool, f reflect.StructField) error { //nolint: cy
 			s.MaxItems = toInt(t.Get(prefix + JTagMax.String()))
 		}
 	}
-
-	return nil
 }
 
 func (s *Schema) mergeProps(target *Schema) {

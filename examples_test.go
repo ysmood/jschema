@@ -11,8 +11,8 @@ import (
 
 func ExampleNew() {
 	type Node struct {
-		// Use tags like default, example to set the json schema validation rules.
-		ID int `json:"id" default:"1" example:"2" min:"0" max:"100"`
+		// Use tags like default, examples to set the json schema validation rules.
+		ID int `json:"id" default:"1" examples:"[1,2,3]" min:"0" max:"100"`
 
 		// Use the tags to set description, min, max, etc. All available tags are [jschema.JTag].
 		// Use [jschema.JTagItemPrefix] to prefix [jschema.JTag] to set the array item.
@@ -53,7 +53,13 @@ func ExampleNew() {
 	//       },
 	//       "id": {
 	//         "default": 1,
-	//         "example": 2,
+	//         "examples": [
+	//           [
+	//             1,
+	//             2,
+	//             3
+	//           ]
+	//         ],
 	//         "type": "integer",
 	//         "maximum": 100,
 	//         "minimum": 0
@@ -181,12 +187,10 @@ func ExampleSchemas() {
 func Example_custom_handler() {
 	s := jschema.New("")
 
-	s.AddHandler(time.Time{}, func() *jschema.Schema {
-		return &jschema.Schema{
-			Description: "time.Time",
-			Title:       "Time",
-			Type:        jschema.TypeString,
-		}
+	s.Hijack(time.Time{}, func(scm *jschema.Schema) {
+		// If we don't this the time will be a struct
+		scm.Type = jschema.TypeString
+		scm.AdditionalProperties = nil
 	})
 
 	type Data struct {

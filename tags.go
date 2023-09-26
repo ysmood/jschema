@@ -8,7 +8,7 @@ const (
 	JTagDescription JTag = "description"
 	JTagFormat      JTag = "format"
 	JTagDefault     JTag = "default"
-	JTagExample     JTag = "example"
+	JTagExamples    JTag = "examples"
 	JTagPattern     JTag = "pattern"
 	JTagMin         JTag = "min"
 	JTagMax         JTag = "max"
