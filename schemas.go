@@ -187,19 +187,15 @@ func (s Schemas) DefineT(t reflect.Type) *Schema { //nolint: cyclop
 	case reflect.Array:
 		el := s.DefineT(t.Elem())
 		l := t.Len()
-		*scm = Schema{
-			Type:     TypeArray,
-			Items:    el,
-			MinItems: &l,
-			MaxItems: &l,
-		}
+		scm.Type = TypeArray
+		scm.Items = el
+		scm.MinItems = &l
+		scm.MaxItems = &l
 
 	case reflect.Map:
-		*scm = Schema{
-			Type: TypeObject,
-			PatternProperties: map[string]*Schema{
-				"": s.DefineT(t.Elem()),
-			},
+		scm.Type = TypeObject
+		scm.PatternProperties = map[string]*Schema{
+			"": s.DefineT(t.Elem()),
 		}
 
 	case reflect.Struct:
