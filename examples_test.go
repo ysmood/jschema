@@ -54,11 +54,9 @@ func ExampleNew() {
 	//       "id": {
 	//         "default": 1,
 	//         "examples": [
-	//           [
-	//             1,
-	//             2,
-	//             3
-	//           ]
+	//           1,
+	//           2,
+	//           3
 	//         ],
 	//         "type": "integer",
 	//         "maximum": 100,

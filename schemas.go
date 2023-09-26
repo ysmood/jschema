@@ -340,7 +340,12 @@ func jsonValuesTag(f reflect.StructField, tagName string) []JVal {
 		return nil
 	}
 
-	return ToJValList(d.Elem().Interface())
+	out := []JVal{}
+	for i := 0; i < d.Elem().Len(); i++ {
+		out = append(out, d.Elem().Index(i).Interface())
+	}
+
+	return out
 }
 
 func toNum(v string) *float64 {
