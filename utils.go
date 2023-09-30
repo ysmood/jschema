@@ -1,8 +1,6 @@
 package jschema
 
 import (
-	"bytes"
-	"encoding/gob"
 	"encoding/json"
 	"reflect"
 	"sort"
@@ -49,19 +47,7 @@ func (s *Schemas) SetSchema(target interface{}, v *Schema) {
 }
 
 func (s *Schema) Clone() *Schema {
-	buf := &bytes.Buffer{}
-	err := gob.NewEncoder(buf).Encode(s)
-	if err != nil {
-		panic(err)
-	}
-
-	n := &Schema{}
-	err = gob.NewDecoder(buf).Decode(n)
-	if err != nil {
-		panic(err)
-	}
-
-	return n
+	return clone.Clone(s).(*Schema) //nolint: forcetypeassert
 }
 
 func (s *Schema) ChangeDefs(to string) {
@@ -111,11 +97,8 @@ func (s *Schemas) Const(v JVal) *Schema {
 }
 
 func (s *Schemas) ToStandAlone(scm *Schema) *Schema {
-	scm = clone.Clone(scm).(*Schema)      //nolint: forcetypeassert
-	types := clone.Clone(s.types).(Types) //nolint: forcetypeassert
-
-	scm.Defs = types
-
+	scm = scm.Clone()
+	scm.Defs = clone.Clone(s.types).(Types) //nolint: forcetypeassert
 	scm.ChangeDefs("#/$defs")
 
 	return scm
