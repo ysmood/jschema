@@ -50,7 +50,7 @@ func TestCommonSchema(t *testing.T) {
 	}
 
 	type Node1 struct {
-		Str     string `format:"email" pattern:"." min:"1" max:"10"`
+		Str     string `format:"email" pattern:"." minLen:"1" maxLen:"10"`
 		Num     int    `json:"num,omitempty"`
 		Bool    bool   `json:"bool"`
 		Ignore  string `json:"-"`
@@ -666,4 +666,53 @@ func TestDefaultTag(t *testing.T) {
 	for k, p := range s.JSON()["X"].Properties {
 		x.FieldByName(k).Set(reflect.ValueOf(p.Default))
 	}
+}
+
+func TestOverrideRef(t *testing.T) {
+	g := got.T(t)
+
+	type A struct {
+		A int
+	}
+
+	type B struct {
+		A A `description:"B" max:"10"`
+	}
+
+	s := jschema.New("")
+
+	s.Define(B{})
+
+	g.Eq(g.JSON(s.String()), map[string]interface{}{
+		"A": map[string]interface{}{
+			"additionalProperties": false,
+			"description":          "github.com/NaturalSelectionLabs/jschema_test.A",
+			"properties": map[string]interface{}{
+				"A": map[string]interface{}{
+					"type": "integer",
+				},
+			},
+			"required": []interface{}{
+				"A",
+			},
+			"title": "A",
+			"type":  "object",
+		},
+		"B": map[string]interface{}{
+			"additionalProperties": false,
+			"description":          "github.com/NaturalSelectionLabs/jschema_test.B",
+			"properties": map[string]interface{}{
+				"A": map[string]interface{}{
+					"description": "B",
+					"maximum":     10.0,
+					"$ref":        "#/$defs/A",
+				},
+			},
+			"required": []interface{}{
+				"A",
+			},
+			"title": "B",
+			"type":  "object",
+		},
+	})
 }

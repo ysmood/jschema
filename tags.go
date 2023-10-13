@@ -12,6 +12,10 @@ const (
 	JTagPattern     JTag = "pattern"
 	JTagMin         JTag = "min"
 	JTagMax         JTag = "max"
+	JTagMinLen      JTag = "minLen"
+	JTagMaxLen      JTag = "maxLen"
+	JTagMinItems    JTag = "minItems"
+	JTagMaxItems    JTag = "maxItems"
 )
 
 const JTagItemPrefix = "item-"

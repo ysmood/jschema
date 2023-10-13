@@ -239,6 +239,7 @@ func (s Schemas) DefineFieldT(f reflect.StructField) *Schema { //nolint: cyclop
 		return nil
 	}
 
+	// expand the fields of anonymous struct field into current struct
 	if f.Anonymous && (tag == nil || tag.Name == "") && indirectType(f.Type).Kind() == reflect.Struct {
 		for i := 0; i < f.Type.NumField(); i++ {
 			scm.mergeProps(s.DefineFieldT(f.Type.Field(i)))
@@ -362,10 +363,6 @@ func toInt(v string) *int {
 }
 
 func (s *Schema) loadTags(item bool, f reflect.StructField) {
-	if s.Ref != nil {
-		return
-	}
-
 	prefix := ""
 	if item {
 		prefix = JTagItemPrefix
@@ -379,23 +376,19 @@ func (s *Schema) loadTags(item bool, f reflect.StructField) {
 
 	s.Examples = jsonValuesTag(f, prefix+JTagExamples.String())
 
-	if s.Type == TypeString {
-		s.Pattern = t.Get(prefix + JTagPattern.String())
-		s.MinLen = toNum(t.Get(prefix + JTagMin.String()))
-		s.MaxLen = toNum(t.Get(prefix + JTagMax.String()))
-	}
+	s.Pattern = t.Get(prefix + JTagPattern.String())
+	s.MinLen = toNum(t.Get(prefix + JTagMinLen.String()))
+	s.MaxLen = toNum(t.Get(prefix + JTagMaxLen.String()))
 
-	if s.Type == TypeNumber || s.Type == TypeInteger {
-		s.Min = toNum(t.Get(prefix + JTagMin.String()))
-		s.Max = toNum(t.Get(prefix + JTagMax.String()))
-	}
+	s.Min = toNum(t.Get(prefix + JTagMin.String()))
+	s.Max = toNum(t.Get(prefix + JTagMax.String()))
 
 	if s.Type == TypeArray {
 		if s.MinItems == nil {
-			s.MinItems = toInt(t.Get(prefix + JTagMin.String()))
+			s.MinItems = toInt(t.Get(prefix + JTagMinItems.String()))
 		}
 		if s.MaxItems == nil {
-			s.MaxItems = toInt(t.Get(prefix + JTagMax.String()))
+			s.MaxItems = toInt(t.Get(prefix + JTagMaxItems.String()))
 		}
 	}
 }
