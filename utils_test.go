@@ -3,8 +3,8 @@ package jschema_test
 import (
 	"testing"
 
-	"github.com/NaturalSelectionLabs/jschema"
 	"github.com/ysmood/got"
+	"github.com/ysmood/jschema"
 )
 
 func TestChangeDefs(t *testing.T) {
@@ -28,7 +28,7 @@ func TestChangeDefs(t *testing.T) {
 		"$defs": map[string]interface{} /* len=2 */ {
 			"A": map[string]interface{} /* len=6 */ {
 				`additionalProperties` /* len=20 */ : false,
-				"description":                        `github.com/NaturalSelectionLabs/jschema_test.A`, /* len=46 */
+				"description":                        `github.com/ysmood/jschema_test.A`, /* len=46 */
 				"properties": map[string]interface{}{
 					"ID": map[string]interface{}{
 						"type": "integer",
@@ -42,7 +42,7 @@ func TestChangeDefs(t *testing.T) {
 			},
 			"B": map[string]interface{} /* len=6 */ {
 				`additionalProperties` /* len=20 */ : false,
-				"description":                        `github.com/NaturalSelectionLabs/jschema_test.B`, /* len=46 */
+				"description":                        `github.com/ysmood/jschema_test.B`, /* len=46 */
 				"properties": map[string]interface{}{
 					"A": map[string]interface{}{
 						"$ref": "#/$defs/A",

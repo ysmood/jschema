@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/naturalselectionlabs/vary"
+	"github.com/ysmood/vary"
 )
 
 type Schemas struct {

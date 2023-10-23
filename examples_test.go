@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/NaturalSelectionLabs/jschema"
-	"github.com/NaturalSelectionLabs/jschema/lib/test"
-	"github.com/naturalselectionlabs/vary"
+	"github.com/ysmood/jschema"
+	"github.com/ysmood/jschema/lib/test"
+	"github.com/ysmood/vary"
 )
 
 func ExampleNew() {
@@ -119,17 +119,17 @@ func ExampleSchemas() {
 	// {
 	//   "A": {
 	//     "title": "A",
-	//     "description": "github.com/NaturalSelectionLabs/jschema_test.A",
+	//     "description": "github.com/ysmood/jschema_test.A",
 	//     "type": "string"
 	//   },
 	//   "B": {
 	//     "title": "B",
-	//     "description": "github.com/NaturalSelectionLabs/jschema_test.B",
+	//     "description": "github.com/ysmood/jschema_test.B",
 	//     "type": "integer"
 	//   },
 	//   "Enum": {
 	//     "title": "Enum",
-	//     "description": "github.com/NaturalSelectionLabs/jschema/lib/test.Enum",
+	//     "description": "github.com/ysmood/jschema/lib/test.Enum",
 	//     "enum": [
 	//       "one",
 	//       "three",
@@ -138,7 +138,7 @@ func ExampleSchemas() {
 	//   },
 	//   "Metadata": {
 	//     "title": "Metadata",
-	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Metadata",
+	//     "description": "github.com/ysmood/jschema_test.Metadata",
 	//     "anyOf": [
 	//       {
 	//         "$ref": "#/components/schemas/A"
@@ -150,7 +150,7 @@ func ExampleSchemas() {
 	//   },
 	//   "Node": {
 	//     "title": "Node",
-	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Node",
+	//     "description": "github.com/ysmood/jschema_test.Node",
 	//     "type": "object",
 	//     "properties": {
 	//       "enum": {
@@ -203,7 +203,7 @@ func Example_custom_handler() {
 	// {
 	//   "Data": {
 	//     "title": "Data",
-	//     "description": "github.com/NaturalSelectionLabs/jschema_test.Data",
+	//     "description": "github.com/ysmood/jschema_test.Data",
 	//     "type": "object",
 	//     "properties": {
 	//       "time": {

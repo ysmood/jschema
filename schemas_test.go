@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/NaturalSelectionLabs/jschema"
-	"github.com/NaturalSelectionLabs/jschema/lib/test"
-	"github.com/naturalselectionlabs/vary"
 	"github.com/xeipuuv/gojsonschema"
 	"github.com/ysmood/got"
+	"github.com/ysmood/jschema"
+	"github.com/ysmood/jschema/lib/test"
+	"github.com/ysmood/vary"
 )
 
 func TestTypeName(t *testing.T) {
@@ -71,7 +71,7 @@ func TestCommonSchema(t *testing.T) {
 
 	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=3 */ {
 		"Enum": map[string]interface{} /* len=3 */ {
-			"description": `github.com/NaturalSelectionLabs/jschema/lib/test.Enum`, /* len=53 */
+			"description": `github.com/ysmood/jschema/lib/test.Enum`, /* len=53 */
 			"enum": []interface{} /* len=3 cap=4 */ {
 				"one",
 				"three",
@@ -81,7 +81,7 @@ func TestCommonSchema(t *testing.T) {
 		},
 		"Node1": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Node1`, /* len=50 */
+			"description":                        `github.com/ysmood/jschema_test.Node1`, /* len=50 */
 			"properties": map[string]interface{} /* len=8 */ {
 				"Arr": map[string]interface{} /* len=4 */ {
 					"items": map[string]interface{} /* len=2 */ {
@@ -149,7 +149,7 @@ func TestCommonSchema(t *testing.T) {
 		},
 		"Node2": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Node2`, /* len=50 */
+			"description":                        `github.com/ysmood/jschema_test.Node2`, /* len=50 */
 			"properties": map[string]interface{} /* len=2 */ {
 				"Any": map[string]interface{}{},
 				"Map": map[string]interface{} /* len=2 */ {
@@ -201,7 +201,7 @@ func TestHandler(t *testing.T) {
 		},
 		"B": map[string]interface{}{
 			"additionalProperties": false,
-			"description":          "github.com/NaturalSelectionLabs/jschema_test.B",
+			"description":          "github.com/ysmood/jschema_test.B",
 			"properties": map[string]interface{}{
 				"A": map[string]interface{}{
 					"$ref": "#/$defs/A",
@@ -263,7 +263,7 @@ func TestEnum(t *testing.T) {
 
 	g.Eq(g.JSON(c.String()), map[string]interface{}{
 		"Enum": map[string]interface{} /* len=3 */ {
-			"description": `github.com/NaturalSelectionLabs/jschema_test.Enum`, /* len=49 */
+			"description": `github.com/ysmood/jschema_test.Enum`, /* len=49 */
 			"enum": []interface{} /* len=2 cap=2 */ {
 				"1",
 				"2",
@@ -326,7 +326,7 @@ func TestNameConflict(t *testing.T) {
 		},
 		"Time1": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Time`, /* len=60 */
+			"description":                        `github.com/ysmood/jschema_test.Time`, /* len=60 */
 			"properties": map[string]interface{}{
 				"Name": map[string]interface{}{
 					"type": "string",
@@ -356,7 +356,7 @@ func TestRawMessage(t *testing.T) {
 	g.Eq(g.JSON(c.String()), map[string]interface{}{
 		"A": map[string]interface{}{
 			"additionalProperties": false,
-			"description":          "github.com/NaturalSelectionLabs/jschema_test.A",
+			"description":          "github.com/ysmood/jschema_test.A",
 			"properties": map[string]interface{}{
 				"A": map[string]interface{}{
 					"$ref": "#/$defs/RawMessage",
@@ -397,13 +397,13 @@ func TestRef(t *testing.T) {
 	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=4 */ {
 		"A": map[string]interface{} /* len=4 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.A`, /* len=46 */
+			"description":                        `github.com/ysmood/jschema_test.A`, /* len=46 */
 			"title":                              "A",
 			"type":                               "object",
 		},
 		"B": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.B`, /* len=46 */
+			"description":                        `github.com/ysmood/jschema_test.B`, /* len=46 */
 			"properties": map[string]interface{} /* len=3 */ {
 				"A": map[string]interface{}{
 					"$ref": "#/$defs/A",
@@ -425,13 +425,13 @@ func TestRef(t *testing.T) {
 		},
 		"C": map[string]interface{} /* len=4 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.C[string]`, /* len=54 */
+			"description":                        `github.com/ysmood/jschema_test.C[string]`, /* len=54 */
 			"title":                              "C[string]",
 			"type":                               "object",
 		},
 		"C1": map[string]interface{} /* len=4 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.C[int]`, /* len=51 */
+			"description":                        `github.com/ysmood/jschema_test.C[int]`, /* len=51 */
 			"title":                              "C[int]",
 			"type":                               "object",
 		},
@@ -456,7 +456,7 @@ func TestEmbeddedStruct(t *testing.T) {
 	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=2 */ {
 		"B": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.B`, /* len=46 */
+			"description":                        `github.com/ysmood/jschema_test.B`, /* len=46 */
 			"properties": map[string]interface{}{
 				"Val": map[string]interface{}{
 					"type": "number",
@@ -512,7 +512,7 @@ func TestAnyOf(t *testing.T) {
 	g.Eq(g.JSON(g.ToJSONString(s.JSON())), map[string]interface{} /* len=4 */ {
 		"Circle": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Circle`, /* len=51 */
+			"description":                        `github.com/ysmood/jschema_test.Circle`, /* len=51 */
 			"properties": map[string]interface{}{
 				"Radius": map[string]interface{}{
 					"type": "number",
@@ -526,7 +526,7 @@ func TestAnyOf(t *testing.T) {
 		},
 		"Data": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Data`, /* len=49 */
+			"description":                        `github.com/ysmood/jschema_test.Data`, /* len=49 */
 			"properties": map[string]interface{}{
 				"shape": map[string]interface{}{
 					"$ref": "#/$defs/Shape",
@@ -540,7 +540,7 @@ func TestAnyOf(t *testing.T) {
 		},
 		"Rectangle": map[string]interface{} /* len=6 */ {
 			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/NaturalSelectionLabs/jschema_test.Rectangle`, /* len=54 */
+			"description":                        `github.com/ysmood/jschema_test.Rectangle`, /* len=54 */
 			"properties": map[string]interface{} /* len=2 */ {
 				"Height": map[string]interface{}{
 					"type": "integer",
@@ -565,7 +565,7 @@ func TestAnyOf(t *testing.T) {
 					"$ref": `#/$defs/Rectangle`, /* len=17 */
 				},
 			},
-			"description": `github.com/NaturalSelectionLabs/jschema_test.Shape`, /* len=50 */
+			"description": `github.com/ysmood/jschema_test.Shape`, /* len=50 */
 			"title":       "Shape",
 		},
 	})
@@ -625,13 +625,13 @@ func TestSchemaT(t *testing.T) {
 			"$defs": map[string]interface{} /* len=2 */ {
 				"A": map[string]interface{} /* len=4 */ {
 					`additionalProperties` /* len=20 */ : false,
-					"description":                        `github.com/NaturalSelectionLabs/jschema_test.A`, /* len=46 */
+					"description":                        `github.com/ysmood/jschema_test.A`, /* len=46 */
 					"title":                              "A",
 					"type":                               "object",
 				},
 				"B": map[string]interface{} /* len=6 */ {
 					`additionalProperties` /* len=20 */ : false,
-					"description":                        `github.com/NaturalSelectionLabs/jschema_test.B`, /* len=46 */
+					"description":                        `github.com/ysmood/jschema_test.B`, /* len=46 */
 					"properties": map[string]interface{}{
 						"A": map[string]interface{}{
 							"$ref": "#/$defs/A",
@@ -686,7 +686,7 @@ func TestOverrideRef(t *testing.T) {
 	g.Eq(g.JSON(s.String()), map[string]interface{}{
 		"A": map[string]interface{}{
 			"additionalProperties": false,
-			"description":          "github.com/NaturalSelectionLabs/jschema_test.A",
+			"description":          "github.com/ysmood/jschema_test.A",
 			"properties": map[string]interface{}{
 				"A": map[string]interface{}{
 					"type": "integer",
@@ -700,7 +700,7 @@ func TestOverrideRef(t *testing.T) {
 		},
 		"B": map[string]interface{}{
 			"additionalProperties": false,
-			"description":          "github.com/NaturalSelectionLabs/jschema_test.B",
+			"description":          "github.com/ysmood/jschema_test.B",
 			"properties": map[string]interface{}{
 				"A": map[string]interface{}{
 					"description": "B",
