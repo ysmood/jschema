@@ -69,106 +69,7 @@ func TestCommonSchema(t *testing.T) {
 		"$ref": "#/$defs/Node1",
 	})
 
-	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=3 */ {
-		"Enum": map[string]interface{} /* len=3 */ {
-			"description": `github.com/ysmood/jschema/lib/test.Enum`, /* len=53 */
-			"enum": []interface{} /* len=3 cap=4 */ {
-				"one",
-				"three",
-				"two",
-			},
-			"title": "Enum",
-		},
-		"Node1": map[string]interface{} /* len=6 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.Node1`, /* len=50 */
-			"properties": map[string]interface{} /* len=8 */ {
-				"Arr": map[string]interface{} /* len=4 */ {
-					"items": map[string]interface{} /* len=2 */ {
-						"minimum": 0.0,
-						"type":    "number",
-					},
-					"maxItems": 2.0,
-					"minItems": 2.0,
-					"type":     "array",
-				},
-				"Enum": map[string]interface{}{
-					"$ref": "#/$defs/Enum",
-				},
-				"EnumPtr": map[string]interface{}{
-					"anyOf": []interface{} /* len=2 cap=2 */ {
-						map[string]interface{}{
-							"$ref": "#/$defs/Enum",
-						},
-						map[string]interface{}{
-							"type": "null",
-						},
-					},
-				},
-				"Obj": map[string]interface{}{
-					"anyOf": []interface{} /* len=2 cap=2 */ {
-						map[string]interface{}{
-							"$ref": "#/$defs/Node2",
-						},
-						map[string]interface{}{
-							"type": "null",
-						},
-					},
-				},
-				"Slice": map[string]interface{} /* len=2 */ {
-					"items": map[string]interface{}{
-						"$ref": "#/$defs/Node1",
-					},
-					"type": "array",
-				},
-				"Str": map[string]interface{} /* len=5 */ {
-					"format":    "email",
-					"maxLength": 10.0,
-					"minLength": 1.0,
-					"pattern":   ".",
-					"type":      "string",
-				},
-				"bool": map[string]interface{}{
-					"type": "boolean",
-				},
-				"num": map[string]interface{}{
-					"type": "integer",
-				},
-			},
-			"required": []interface{} /* len=7 cap=8 */ {
-				"Str",
-				"bool",
-				"Slice",
-				"Arr",
-				"Obj",
-				"Enum",
-				"EnumPtr",
-			},
-			"title": "Node1",
-			"type":  "object",
-		},
-		"Node2": map[string]interface{} /* len=6 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.Node2`, /* len=50 */
-			"properties": map[string]interface{} /* len=2 */ {
-				"Any": map[string]interface{}{},
-				"Map": map[string]interface{} /* len=2 */ {
-					`patternProperties` /* len=17 */ : map[string]interface{}{
-						"": map[string]interface{}{
-							"type": "number",
-						},
-					},
-					"type": "object",
-				},
-			},
-			"required": []interface{} /* len=2 cap=2 */ {
-				"Map",
-				"Any",
-			},
-			"title": "Node2",
-			"type":  "object",
-		},
-	})
+	g.Snapshot("common schema", c.JSON())
 }
 
 func TestHandler(t *testing.T) {
@@ -193,27 +94,7 @@ func TestHandler(t *testing.T) {
 
 	c.Define(B{})
 
-	g.Eq(g.JSON(c.String()), map[string]interface{}{
-		"A": map[string]interface{}{
-			"title":       "AA",
-			"description": "type A",
-			"type":        "number",
-		},
-		"B": map[string]interface{}{
-			"additionalProperties": false,
-			"description":          "github.com/ysmood/jschema_test.B",
-			"properties": map[string]interface{}{
-				"A": map[string]interface{}{
-					"$ref": "#/$defs/A",
-				},
-			},
-			"required": []interface{}{
-				"A",
-			},
-			"title": "B",
-			"type":  "object",
-		},
-	})
+	g.Snapshot("handler", c.JSON())
 }
 
 type Enum int
@@ -317,28 +198,7 @@ func TestNameConflict(t *testing.T) {
 	c.Define(time.Time{})
 	c.Define(Time{})
 
-	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=2 */ {
-		"Time": map[string]interface{} /* len=4 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        "time.Time",
-			"title":                              "Time",
-			"type":                               "object",
-		},
-		"Time1": map[string]interface{} /* len=6 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.Time`, /* len=60 */
-			"properties": map[string]interface{}{
-				"Name": map[string]interface{}{
-					"type": "string",
-				},
-			},
-			"required": []interface{} /* len=1 cap=1 */ {
-				"Name",
-			},
-			"title": "Time",
-			"type":  "object",
-		},
-	})
+	g.Snapshot("conflict", c.JSON())
 }
 
 func TestRawMessage(t *testing.T) {
@@ -394,48 +254,7 @@ func TestRef(t *testing.T) {
 
 	g.Eq(c.PeakSchema(A{}).Title, "A")
 
-	g.Eq(g.JSON(c.String()), map[string]interface{} /* len=4 */ {
-		"A": map[string]interface{} /* len=4 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.A`, /* len=46 */
-			"title":                              "A",
-			"type":                               "object",
-		},
-		"B": map[string]interface{} /* len=6 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.B`, /* len=46 */
-			"properties": map[string]interface{} /* len=3 */ {
-				"A": map[string]interface{}{
-					"$ref": "#/$defs/A",
-				},
-				"C": map[string]interface{}{
-					"$ref": "#/$defs/C",
-				},
-				"C2": map[string]interface{}{
-					"$ref": "#/$defs/C1",
-				},
-			},
-			"required": []interface{} /* len=3 cap=4 */ {
-				"A",
-				"C",
-				"C2",
-			},
-			"title": "B",
-			"type":  "object",
-		},
-		"C": map[string]interface{} /* len=4 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.C[string]`, /* len=54 */
-			"title":                              "C[string]",
-			"type":                               "object",
-		},
-		"C1": map[string]interface{} /* len=4 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.C[int]`, /* len=51 */
-			"title":                              "C[int]",
-			"type":                               "object",
-		},
-	})
+	g.Snapshot("ref", c.JSON())
 }
 
 func TestEmbeddedStruct(t *testing.T) {
@@ -509,66 +328,7 @@ func TestAnyOf(t *testing.T) {
 
 	s.Define(Data{})
 
-	g.Eq(g.JSON(g.ToJSONString(s.JSON())), map[string]interface{} /* len=4 */ {
-		"Circle": map[string]interface{} /* len=6 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.Circle`, /* len=51 */
-			"properties": map[string]interface{}{
-				"Radius": map[string]interface{}{
-					"type": "number",
-				},
-			},
-			"required": []interface{} /* len=1 cap=1 */ {
-				"Radius",
-			},
-			"title": "Circle",
-			"type":  "object",
-		},
-		"Data": map[string]interface{} /* len=6 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.Data`, /* len=49 */
-			"properties": map[string]interface{}{
-				"shape": map[string]interface{}{
-					"$ref": "#/$defs/Shape",
-				},
-			},
-			"required": []interface{} /* len=1 cap=1 */ {
-				"shape",
-			},
-			"title": "Data",
-			"type":  "object",
-		},
-		"Rectangle": map[string]interface{} /* len=6 */ {
-			`additionalProperties` /* len=20 */ : false,
-			"description":                        `github.com/ysmood/jschema_test.Rectangle`, /* len=54 */
-			"properties": map[string]interface{} /* len=2 */ {
-				"Height": map[string]interface{}{
-					"type": "integer",
-				},
-				"Width": map[string]interface{}{
-					"type": "integer",
-				},
-			},
-			"required": []interface{} /* len=2 cap=2 */ {
-				"Width",
-				"Height",
-			},
-			"title": "Rectangle",
-			"type":  "object",
-		},
-		"Shape": map[string]interface{} /* len=3 */ {
-			"anyOf": []interface{} /* len=2 cap=2 */ {
-				map[string]interface{}{
-					"$ref": "#/$defs/Circle",
-				},
-				map[string]interface{}{
-					"$ref": `#/$defs/Rectangle`, /* len=17 */
-				},
-			},
-			"description": `github.com/ysmood/jschema_test.Shape`, /* len=50 */
-			"title":       "Shape",
-		},
-	})
+	g.Snapshot("anyOf", s.JSON())
 
 	js := s.JSON()
 

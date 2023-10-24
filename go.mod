@@ -5,8 +5,8 @@ go 1.20
 require (
 	github.com/huandu/go-clone v1.6.0
 	github.com/xeipuuv/gojsonschema v1.2.0
-	github.com/ysmood/got v0.36.0
-	github.com/ysmood/vary v0.3.6
+	github.com/ysmood/got v0.37.0
+	github.com/ysmood/vary v0.3.7
 )
 
 require (
