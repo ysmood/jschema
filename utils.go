@@ -8,8 +8,8 @@ import (
 	"github.com/huandu/go-clone"
 )
 
-// Description set the description for current type.
-func (s Schemas) Description(v interface{}, desc string) {
+// Describe set the description for type v.
+func (s Schemas) Describe(v interface{}, desc string) {
 	scm := s.PeakSchema(v)
 	scm.Description = desc
 }

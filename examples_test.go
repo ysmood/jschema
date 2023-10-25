@@ -24,7 +24,7 @@ func ExampleNew() {
 
 	// Define a type within the schema
 	schemas.Define(Node{})
-	schemas.Description(Node{}, "A node in the tree")
+	schemas.Describe(Node{}, "A node in the tree")
 
 	fmt.Println(schemas.String())
 
