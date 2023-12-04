@@ -23,6 +23,10 @@ func (s *Schemas) Ref(v interface{}) Ref {
 var regTrimGeneric = regexp.MustCompile(`\[.+\]$`)
 
 func (s *Schemas) RefT(t reflect.Type) Ref {
+	if t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Interface {
+		t = t.Elem()
+	}
+
 	hash := fmt.Sprintf("%x", md5.Sum([]byte(t.PkgPath()+t.Name())))
 
 	id := regTrimGeneric.ReplaceAllString(t.Name(), "")

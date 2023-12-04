@@ -476,3 +476,18 @@ func TestOverrideRef(t *testing.T) {
 		},
 	})
 }
+
+func TestRefInterface(t *testing.T) {
+	g := got.T(t)
+
+	s := jschema.New("")
+	ref := s.Ref(new(Shape))
+
+	g.Eq(ref, jschema.Ref{
+		Defs:    "#/$defs",
+		Package: "github.com/ysmood/jschema_test",
+		Name:    "Shape",
+		Hash:    "ae1cec3fbb3190bd993c3e5a681546a3",
+		ID:      "Shape",
+	})
+}
