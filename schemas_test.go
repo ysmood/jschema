@@ -481,7 +481,7 @@ func TestRefInterface(t *testing.T) {
 	g := got.T(t)
 
 	s := jschema.New("")
-	ref := s.Ref(new(Shape))
+	ref := s.RefI(new(Shape))
 
 	g.Eq(ref, jschema.Ref{
 		Defs:    "#/$defs",
@@ -490,4 +490,22 @@ func TestRefInterface(t *testing.T) {
 		Hash:    "ae1cec3fbb3190bd993c3e5a681546a3",
 		ID:      "Shape",
 	})
+}
+
+func TestAnyOfInterface(t *testing.T) {
+	g := got.T(t)
+
+	type A struct{}
+
+	type B struct{}
+
+	type C interface{}
+
+	_ = vary.New(new(C), A{}, B{})
+
+	s := jschema.New("")
+
+	s.Define(new(C))
+
+	g.Snapshot("any", s.JSON())
 }

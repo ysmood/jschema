@@ -20,13 +20,19 @@ func (s *Schemas) Ref(v interface{}) Ref {
 	return s.RefT(reflect.TypeOf(v))
 }
 
+// RefI is a shortcut for [Schemas.Ref] to get the Ref from an interface pointer, such as:
+//
+//	var Animal interface{}
+//	s.RefI(new(Animal))
+//
+// Because there's no other way to get the [reflect.Type] of an interface in golang.
+func (s *Schemas) RefI(v interface{}) Ref {
+	return s.RefT(reflect.TypeOf(v).Elem())
+}
+
 var regTrimGeneric = regexp.MustCompile(`\[.+\]$`)
 
 func (s *Schemas) RefT(t reflect.Type) Ref {
-	if t.Kind() == reflect.Ptr && t.Elem().Kind() == reflect.Interface {
-		t = t.Elem()
-	}
-
 	hash := fmt.Sprintf("%x", md5.Sum([]byte(t.PkgPath()+t.Name())))
 
 	id := regTrimGeneric.ReplaceAllString(t.Name(), "")
