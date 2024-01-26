@@ -416,6 +416,7 @@ func TestDefaultTag(t *testing.T) {
 		C uint   `default:"1"`
 		D *uint  `default:"1"`
 		E []uint `default:"[1,2,3]"`
+		F string `default:""`
 	}
 
 	s := jschema.New("")

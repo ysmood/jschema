@@ -302,8 +302,8 @@ func (s Schemas) defineInstances(scm *Schema, i *vary.Interface) {
 }
 
 func jsonValTag(f reflect.StructField, tagName string) JVal { //nolint: ireturn
-	tag := f.Tag.Get(tagName)
-	if tag == "" {
+	tag, has := f.Tag.Lookup(tagName)
+	if !has {
 		return nil
 	}
 
