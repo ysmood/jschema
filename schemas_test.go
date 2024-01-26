@@ -493,6 +493,16 @@ func TestRefInterface(t *testing.T) {
 	})
 }
 
+func TestPeakSchemaI(t *testing.T) {
+	g := got.T(t)
+
+	s := jschema.New("")
+	s.Define(new(Shape))
+
+	scm := s.PeakSchemaI(new(Shape))
+	g.Eq(scm.Title, "Shape")
+}
+
 func TestAnyOfInterface(t *testing.T) {
 	g := got.T(t)
 

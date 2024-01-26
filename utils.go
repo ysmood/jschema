@@ -35,6 +35,26 @@ func (s *Schemas) PeakSchema(v interface{}) *Schema {
 	return s.types[r.ID]
 }
 
+// PeakSchemaI is a shortcut for [Schemas.PeakSchema] to get the schema by an interface pointer, such as:
+//
+//	var Animal interface{}
+//	s.PeakSchemaI(new(Animal))
+//
+// Because there's no other way to get the [reflect.Type] of an interface in golang.
+func (s *Schemas) PeakSchemaI(v interface{}) *Schema {
+	r := s.RefI(v)
+
+	if scm, ok := v.(*Schema); ok {
+		if scm.Ref == nil {
+			return scm
+		} else {
+			r = *scm.Ref
+		}
+	}
+
+	return s.types[r.ID]
+}
+
 // SetSchema sets the schema for the given target. It will keep the title and description.
 func (s *Schemas) SetSchema(target interface{}, v *Schema) {
 	s.Define(target)
