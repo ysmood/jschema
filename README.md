@@ -1,10 +1,10 @@
 # Overview
 
-A lib to convert existing golang struct into json schema list.
+A lib to convert existing golang structs into json schema list.
 
 Features:
 
-- No need to modify the existing struct
+- No need to modify the existing structs
 - Support `anyOf` for interface typing
 - Support custom type hijack
 - Support easy modification of the generated schema
